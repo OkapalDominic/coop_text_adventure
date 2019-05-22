@@ -2,6 +2,8 @@
 const io = require('socket.io')();
 const port = 7777;
 
+var usernames = [];
+
 io.on('connection', (client) => {
     
     client.on('subscribeToTimer', (interval) => {
@@ -10,6 +12,12 @@ io.on('connection', (client) => {
             client.emit('timer', new Date());
         }, interval);
     });
+
+    client.on('login', (msg) => {
+        console.log(msg.username);
+        usernames.push(msg.username);
+        client.emit('login', {success: true});
+    })
 
 });
 
