@@ -1,35 +1,44 @@
 import React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 
-interface Props {
+interface MatchParams {
     username: string;
+}
+
+interface Props extends RouteComponentProps<MatchParams> {
 }
 
 interface State {
     username?: string;
-    toLobby?: boolean;
 }
 
 class LobbyPage extends React.Component<Props, State> {
-    constructor(props: RouteComponentProps) {
+    state: State = {
+        username: ''
+    }
+    constructor(props: Props) {
         super(props);
         this.logIt = this.logIt.bind(this);
-        let { params } = props.match;
-        console.log(params);
+        console.log(props.match.params.username);
     }
-    
+
+    componentDidMount() {
+        this.setState({
+            username: this.props.match.params.username
+        });
+    }
+
     logIt() {
-        for(let prop in this.props) {
-            console.log(prop);
-        }
-        console.log(this.props);
+        console.log(this.state.username);
     }
 
     render() {
         return (
             <p
                 onClick={this.logIt}
-            >Welcome</p>
+            >
+                Welcome {this.state.username}
+            </p>
         );
     }
 }
