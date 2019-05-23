@@ -8,12 +8,20 @@ interface Props {}
 interface State {
     username?: string;
     toLobby?: boolean;
+    error?: {
+        show: boolean,
+        message: string,
+    }
 }
 
 class LoginPage extends React.Component<Props, State> {
     state: State = {
         username: '',
-        toLobby: false
+        toLobby: false,
+        error: {
+            show: false,
+            message: '',
+        }
     };
 
     constructor(props: any) {
@@ -28,6 +36,13 @@ class LoginPage extends React.Component<Props, State> {
         if (res.success) {
             this.setState({
                 toLobby: true
+            });
+        } else {
+            this.setState({
+                error: {
+                    show: true,
+                    message: 'Username not available',
+                }
             });
         }
     }
@@ -49,6 +64,11 @@ class LoginPage extends React.Component<Props, State> {
             return <Redirect to={'/lobby/' + this.state.username} />
         }
 
+        let error = <span></span>;
+        if(this.state.error && this.state.error.show) {
+            error = <p>{this.state.error.message}</p>;
+        }
+
         return (
             <div>
                 <h1>Cooperative Text-Adventure</h1>
@@ -57,6 +77,7 @@ class LoginPage extends React.Component<Props, State> {
                     placeholder="Username..."
                     onChange={this.updateUsername}
                 ></input>
+                {error}
                 <button
                     type="submit"
                     onClick={this.handleBegin}
