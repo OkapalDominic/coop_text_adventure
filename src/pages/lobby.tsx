@@ -5,8 +5,7 @@ interface MatchParams {
     username: string;
 }
 
-interface Props extends RouteComponentProps<MatchParams> {
-}
+type Props = RouteComponentProps<MatchParams>;
 
 interface State {
     username?: string;
@@ -18,8 +17,6 @@ class LobbyPage extends React.Component<Props, State> {
     }
     constructor(props: Props) {
         super(props);
-        this.logIt = this.logIt.bind(this);
-        console.log(props.match.params.username);
     }
 
     componentDidMount() {
@@ -28,15 +25,9 @@ class LobbyPage extends React.Component<Props, State> {
         });
     }
 
-    logIt() {
-        console.log(this.state.username);
-    }
-
     render() {
         return (
-            <p
-                onClick={this.logIt}
-            >
+            <p>
                 Welcome {this.state.username}
             </p>
         );

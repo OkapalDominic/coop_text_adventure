@@ -12,6 +12,6 @@ function afterLogin(res: LoginResponse, cb: (res: LoginResponse) => void): void 
 function login(req: LoginRequest, cb: (res: LoginResponse) => void): void {
     socket.on('login', (res: LoginResponse) => afterLogin(res, cb));
     socket.emit('login', req);
-};
+}
 
 export { login };

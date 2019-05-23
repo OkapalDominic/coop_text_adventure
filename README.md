@@ -11,5 +11,7 @@ Run the following commands:
 6. npm start
 
 ## Linting
-
-Run: npm run-script lint
+Setup:
+npm i -D @types/react @typescript-eslint/eslint-plugin @typescript-eslint/parser eslint-config-react
+Run:
+npm run lint

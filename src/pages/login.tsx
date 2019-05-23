@@ -2,16 +2,17 @@ import * as React from 'react';
 import { login } from '../components/api';
 import { LoginRequest, LoginResponse } from '../api_objects/login_api';
 import { Redirect } from 'react-router';
+import { RouteProps } from 'react-router-dom';
 
-interface Props {}
+type Props = RouteProps;
 
 interface State {
     username?: string;
     toLobby?: boolean;
     error?: {
-        show: boolean,
-        message: string,
-    }
+        show: boolean;
+        message: string;
+    };
 }
 
 class LoginPage extends React.Component<Props, State> {
@@ -24,7 +25,7 @@ class LoginPage extends React.Component<Props, State> {
         }
     };
 
-    constructor(props: any) {
+    constructor(props: Props) {
         super(props);
         this.onLogin = this.onLogin.bind(this);
         this.updateUsername = this.updateUsername.bind(this);
@@ -32,7 +33,6 @@ class LoginPage extends React.Component<Props, State> {
     }
 
     onLogin(res: LoginResponse): void {
-        console.log('logged in: ' + res.success);
         if (res.success) {
             this.setState({
                 toLobby: true
@@ -53,15 +53,14 @@ class LoginPage extends React.Component<Props, State> {
         });
     }
 
-    handleBegin(event: React.MouseEvent) {
-        console.log(this.state.username);
+    handleBegin(/*event: React.MouseEvent*/) {
         let req: LoginRequest = { username: this.state.username || '' };
         login(req, this.onLogin);
     }
 
     render() {
         if (this.state.toLobby === true) {
-            return <Redirect to={'/lobby/' + this.state.username} />
+            return <Redirect to={'/lobby/' + this.state.username} />;
         }
 
         let error = <span></span>;

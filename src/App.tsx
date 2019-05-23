@@ -9,20 +9,20 @@ import LobbyPage from './pages/lobby';
 
 const App: React.FC = () => {
 
-  return (
-    <BrowserRouter>
-      <div className="App">
-        <header className="App-header">
-          <h1>Header</h1>
-        </header>
-        <Switch>
-          <Route exact={true} path="/" component={LoginPage} />
-          <Route path="/login" component={LoginPage} />
-          <Route path="/lobby/:username" component={LobbyPage} />
-        </Switch>
-      </div>
-    </BrowserRouter>
-  );
-}
+    return (
+        <BrowserRouter>
+            <div className="App">
+                <header className="App-header">
+                    <h1>Header</h1>
+                </header>
+                <Switch>
+                    <Route exact={true} path="/" component={LoginPage} />
+                    <Route path="/login" component={LoginPage} />
+                    <Route path="/lobby/:username" component={LobbyPage} />
+                </Switch>
+            </div>
+        </BrowserRouter>
+    );
+};
 
 export default App;
