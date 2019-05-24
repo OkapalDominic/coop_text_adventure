@@ -4,12 +4,12 @@ import * as socketIo from 'socket.io';
 import { LoginRequest } from './api_objects/login_api';
 
 export class AdventureServer {
-    public static readonly PORT:number = 7777;
+    public static readonly PORT: number = 7777;
     private app: express.Application;
     private server: Server;
     private io: SocketIO.Server;
     private port: string | number;
-    private usernames: Array<string> = [];
+    private usernames: string[] = [];
 
     constructor() {
         this.createApp();
@@ -58,7 +58,7 @@ export class AdventureServer {
 
             socket.on('disconnect', () => {
                 console.log('%s disconnected.', socket.id);
-            })
+            });
         });
     }
 }

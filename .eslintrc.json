@@ -1,17 +1,12 @@
 {
     "env": {
-        "browser": true,
-        "jasmine": true,
-        "jest": true,
-        "serviceworker": true
+        "node": true
     },
     "extends": [
         "eslint:recommended",
-        "plugin:react/recommended",
         "plugin:@typescript-eslint/recommended"
     ],
     "plugins": [
-        "react",
         "@typescript-eslint"
     ],
     "rules": {
@@ -29,12 +24,6 @@
         ],
         "@typescript-eslint/explicit-function-return-type": 0,
         "@typescript-eslint/explicit-member-accessibility": 0
-    },
-    "settings": {
-        "react": {
-            "pragma": "React",
-            "version": "detect"
-        }
     },
     "parser": "@typescript-eslint/parser"
 }

@@ -8,6 +8,7 @@ Run the following commands:
 
 ## Linting
 Setup:
-npm i -D @typescript-eslint/eslint-plugin @typescript-eslint/parser
+1. npm i -D @typescript-eslint/eslint-plugin @typescript-eslint/parser
+2. npm install eslint
 Run:
 npm run lint
