@@ -5,7 +5,7 @@ export default class Player {
     private my_sessionKey: string;
     private health: number;
     private my_score: number;
-    private connected: boolean;
+    private my_connected: boolean;
 
     /*
     **  @param {username}: A string representing the players game name
@@ -45,21 +45,17 @@ export default class Player {
     }
 
     /*
-    **  Sets this.connected to true
-    **  Returns this player
+    **  @param {connect}: Set if player connected or disconnected
+    **  Returns this player or connected if param is omitted
     */
-    public connect(): Player {
-        this.connected = true;
-        return this;
-    }
-
-    /*
-    **   Sets this.connected to false
-    **   Returns this player
-    */
-    public disconnect(): Player {
-        this.connected = false;
-        return this;
+    public connected(connect: boolean): Player;
+    public connected(): boolean;
+    public connected(connect?: boolean): Player | boolean {
+        if(connect != null) {
+            this.my_connected = connect;
+            return this;
+        }
+        return this.my_connected;
     }
 
     /*

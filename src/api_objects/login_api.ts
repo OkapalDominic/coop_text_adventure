@@ -1,7 +1,9 @@
 export interface LoginRequest {
     username: string;
+    sessionKey?: string;
 }
 
-export interface LoginResponse {
+export class LoginResponse {
     success: boolean;
+    sessionKey: string;
 }
