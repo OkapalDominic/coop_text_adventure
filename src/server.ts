@@ -1,7 +1,9 @@
 import { createServer, Server } from 'http';
 import * as express from 'express';
 import * as socketIo from 'socket.io';
-import { LoginRequest } from './api_objects/login_api';
+import { LoginRequest, LoginResponse } from './api_objects/login_api';
+
+import Player from './components/player';
 
 export class AdventureServer {
     public static readonly PORT: number = 7777;
@@ -9,7 +11,7 @@ export class AdventureServer {
     private server: Server;
     private io: SocketIO.Server;
     private port: string | number;
-    private usernames: string[] = [];
+    private players: Player[] = [];
 
     constructor() {
         this.createApp();
@@ -48,6 +50,18 @@ export class AdventureServer {
             console.log('Connected client: %s', socket.id);
             socket.on('login', (msg: LoginRequest) => {
                 console.log('username %s', msg.username);
+                let res: LoginResponse;
+                res.success = true;
+                this.players.forEach( (player) => {
+                    if(player.username === msg.username) {
+                        res.success = false;
+                    }
+                });
+                if(res.success) {
+
+                }
+                this.io.emit('login', res);
+
                 if(this.usernames.indexOf(msg.username) === -1) {
                     this.usernames.push(msg.username);
                     this.io.emit('login', {success: true});

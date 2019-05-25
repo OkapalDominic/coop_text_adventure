@@ -1,10 +1,14 @@
 
 
-export class Player {
+export default class Player {
     private health: number;
     private score: number;
 
-    constructor(private username: string, private sessionKey: string) {
+    /*
+    **  @param {username}: A string representing the players game name
+    **  @param {sessionKey}: The session key assigned to this player
+    */
+    constructor(readonly username: string, readonly sessionKey: string | number) {
         this.health = 100;
         this.score = 0;
     }
@@ -29,4 +33,6 @@ export class Player {
         this.score += score;
         return this.score;
     }
+
+    
 }
