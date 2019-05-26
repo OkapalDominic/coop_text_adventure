@@ -12,9 +12,9 @@ const App: React.FC = () => {
     return (
         <BrowserRouter>
             <div className="App">
-                <header className="App-header">
+                {/* <header className="App-header">
                     <h1>Header</h1>
-                </header>
+                </header> */}
                 <Switch>
                     <Route exact={true} path="/" component={LoginPage} />
                     <Route path="/login" component={LoginPage} />
