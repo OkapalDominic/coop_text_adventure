@@ -20,15 +20,16 @@ class LobbyPage extends React.Component<Props, State> {
     }
 
     componentDidMount() {
-        this.setState({
-            username: this.props.match.params.username
-        });
+        // this.setState({
+        //     username: this.props.match.params.username
+        // });
     }
 
     render() {
+        let username: string = sessionStorage.getItem('username') || '';
         return (
             <p>
-                Welcome {this.state.username}
+                Welcome to the lobby {username}!
             </p>
         );
     }

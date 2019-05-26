@@ -2,9 +2,9 @@ import * as React from 'react';
 import { login } from '../components/api';
 import { LoginRequest, LoginResponse } from '../api_objects/login_api';
 import { Redirect } from 'react-router';
-import { RouteProps } from 'react-router-dom';
+import { RouteComponentProps } from 'react-router-dom';
 
-type Props = RouteProps;
+type Props = RouteComponentProps;
 
 interface State {
     username?: string;
@@ -34,9 +34,12 @@ class LoginPage extends React.Component<Props, State> {
 
     onLogin(res: LoginResponse): void {
         if (res.success) {
-            this.setState({
-                toLobby: true
-            });
+            sessionStorage.setItem('sessionKey', res.sessionKey);
+            sessionStorage.setItem('username', res.username);
+            this.props.history.push('/lobby');
+            // this.setState({
+            //     toLobby: true
+            // });
         } else {
             this.setState({
                 error: {
@@ -54,7 +57,11 @@ class LoginPage extends React.Component<Props, State> {
     }
 
     handleBegin(/*event: React.MouseEvent*/) {
-        let req: LoginRequest = { username: this.state.username || '' };
+        let req: LoginRequest = new LoginRequest();
+        req.username = this.state.username || '';
+        if(sessionStorage.getItem('sessionKey') !== undefined) {
+            req.sessionKey = sessionStorage.getItem('sessionKey') || '';
+        }
         login(req, this.onLogin);
     }
 
