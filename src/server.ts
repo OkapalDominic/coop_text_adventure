@@ -44,7 +44,7 @@ export class AdventureServer {
 
     private listen(): void {
         this.server.listen(this.port, () => {
-            console.log('Running server on port %s', this.port);
+            console.log('Running server on port %s', this.port);  // eslint-disable-line no-console
         });
 
         this.io.on('connect', (socket: socketIo.Socket) => {
@@ -62,12 +62,16 @@ export class AdventureServer {
                 ////////////////////////////////////////////////////////
                 let res: LoginResponse = new LoginResponse();
                 res.sessionKey = player.sessionKey();
-
-                if(this.players.add(player, req.username)) {
+                
+                let added: boolean;
+                [added, player] = this.players.add(player, req.username);
+                if(added) {
                     res.success = true;
+                    res.username = player.username();
                     socket.emit('login', res);
                 } else {
                     res.success = false;
+                    res.username = player.username();
                     socket.emit('login', res);
                 }
             });

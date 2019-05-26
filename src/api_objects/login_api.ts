@@ -6,4 +6,5 @@ export interface LoginRequest {
 export class LoginResponse {
     success: boolean;
     sessionKey: string;
+    username: string;
 }

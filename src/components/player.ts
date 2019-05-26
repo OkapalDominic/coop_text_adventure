@@ -1,11 +1,11 @@
 // Use this class to create Players
 
 export default class Player {
-    private my_username: string;
-    private my_sessionKey: string;
+    private myUsername: string;
+    private mySessionKey: string;
     private health: number;
-    private my_score: number;
-    private my_connected: boolean;
+    private myScore: number;
+    private myConnected: boolean;
 
     /*
     **  @param {username}: A string representing the players game name
@@ -13,49 +13,49 @@ export default class Player {
     */
     constructor() {
         this.health = 100;
-        this.my_score = 0;
+        this.myScore = 0;
     }
 
     /*
     **  @param {username}: The new username for this player
     **  Returns this player or username if param is omitted
     */
-    public username(username: string): Player;
-    public username(): string;
-    public username(username?: string): Player | string {
+    public username(username: string): Player;  // eslint-disable-line no-dupe-class-members
+    public username(): string;  // eslint-disable-line no-dupe-class-members
+    public username(username?: string): Player | string {  // eslint-disable-line no-dupe-class-members
         if (username && username.length > 0) {
-            this.my_username = username;
+            this.myUsername = username;
             return this;
         }
-        return this.my_username;
+        return this.myUsername;
     }
 
     /*
     **   @param {sessionKey}: The new sessionKey for this player
     **   Returns this player or sessionKey if param is omitted
     */
-    public sessionKey(sessionKey: string): Player;
-    public sessionKey(): string;
-    public sessionKey(sessionKey?: string): Player | string {
+    public sessionKey(sessionKey: string): Player;  // eslint-disable-line no-dupe-class-members
+    public sessionKey(): string;  // eslint-disable-line no-dupe-class-members
+    public sessionKey(sessionKey?: string): Player | string {  // eslint-disable-line no-dupe-class-members
         if (sessionKey && sessionKey.length > 0) {
-            this.my_sessionKey = sessionKey;
+            this.mySessionKey = sessionKey;
             return this;
         }
-        return this.my_sessionKey;
+        return this.mySessionKey;
     }
 
     /*
     **  @param {connect}: Set if player connected or disconnected
     **  Returns this player or connected if param is omitted
     */
-    public connected(connect: boolean): Player;
-    public connected(): boolean;
-    public connected(connect?: boolean): Player | boolean {
-        if(connect != null) {
-            this.my_connected = connect;
+    public connected(connect: boolean): Player;  // eslint-disable-line no-dupe-class-members
+    public connected(): boolean;  // eslint-disable-line no-dupe-class-members
+    public connected(connect?: boolean): Player | boolean {  // eslint-disable-line no-dupe-class-members
+        if (connect != null) {
+            this.myConnected = connect;
             return this;
         }
-        return this.my_connected;
+        return this.myConnected;
     }
 
     /*
@@ -81,14 +81,14 @@ export default class Player {
     **  @param {score}: The amount to increase score by
     **  Returns this player or players score if param is omitted
     */
-    public score(score: number): Player;
-    public score(): number;
-    public score(score?: number): Player | number {
+    public score(score: number): Player;  // eslint-disable-line no-dupe-class-members
+    public score(): number;  // eslint-disable-line no-dupe-class-members
+    public score(score?: number): Player | number {  // eslint-disable-line no-dupe-class-members
         if (score) {
-            this.my_score += score;
+            this.myScore += score;
             return this;
         }
-        return this.my_score;
+        return this.myScore;
     }
 
 }

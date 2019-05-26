@@ -4,7 +4,7 @@
 import Player from './player';
 
 
-const disconnectTimeout: number = 3000;
+const disconnectTimeout = 3000;
 
 export default class Players {
     private players: Player[] = [];
@@ -17,9 +17,9 @@ export default class Players {
         let pindex: number = this.getPlayerBySession(player.sessionKey());
         if (pindex !== -1) {
             this.players[pindex].connected(false);
-            this.disconnectTimeout().then(result => {
+            this.disconnectTimeout().then(() => {
                 pindex = this.getPlayerBySession(player.sessionKey());
-                if(!this.players[pindex].connected()) {
+                if (!this.players[pindex].connected()) {
                     // If not connected, then remove.
                     this.players.splice(pindex, 1);
                 }
@@ -30,28 +30,41 @@ export default class Players {
     /*
     **  @param {player}: The player trying to login.
     **  @param {username}: The username they want to use.
-    **  Returns false if username matches a different player's username
+    **  Returns a tuple [boolean, Player]
+    **  boolean is false if username matches a different player's username
+    **  and Player is the player object after modification
     */
-    public add(player: Player, username: string): boolean {
+    public add(player: Player, username: string): [boolean, Player] {
         let success = true;
-        let pindex: number = this.getPlayerByUsername(username);
-        if (pindex === -1) {
-            // No player with that username, so set it
-            player.username(username);
-            pindex = this.getPlayerBySession(player.sessionKey());
-            if (pindex === -1) {
-                // No player with that session, so push new player
-                this.players.push(player);
+        let sindex: number = this.getPlayerBySession(player.sessionKey());
+
+        if (sindex !== -1) {
+            let old: Player = this.players[sindex];
+            if (player !== old) {
+                // We have a reconnection
+                player = old;
+                player.connected(true);
             }
         } else {
-            // player pindex has that username
-            if (this.players[pindex].sessionKey() !== player.sessionKey()) {
-                // duplicate username error
+            // We have a new player
+            this.players.push(player);
+        }
+
+        if (this.usernameValid(username)) {
+            // username is valid
+            player.username(username);
+        } else {
+            // username not valid
+            if (this.players[this.getPlayerByUsername(username)] !== player) {
+                // if that player is not this player, login fail.  Otherwise no change is needed.
                 success = false;
             }
         }
+        return [success, player];
+    }
 
-        return success;
+    private usernameValid(username: string): boolean {
+        return this.getPlayerByUsername(username) === -1 && username.length > 0;
     }
 
     private getPlayerByUsername(username: string): number {
@@ -66,9 +79,9 @@ export default class Players {
         });
     }
 
-    private async disconnectTimeout(): Promise<any> {
-        return new Promise((resolve, reject) => {
-            setTimeout(() => resolve(), disconnectTimeout)
+    private async disconnectTimeout(): Promise<null> {
+        return new Promise((resolve) => {
+            setTimeout(() => resolve(), disconnectTimeout);
         });
     }
 }
