@@ -3,7 +3,7 @@ import { login } from '../components/api';
 import { LoginRequest, LoginResponse } from '../api_objects/login_api';
 import { RouteComponentProps } from 'react-router-dom';
 
-import './login.css';
+import styles from './login.module.css';
 
 type Props = RouteComponentProps;
 
@@ -42,7 +42,7 @@ class LoginPage extends React.Component<Props, State> {
                 }
             });
             setTimeout(() => {
-                this.props.history.push('/lobby');
+                this.props.history.push('/tavern');
             }, 1200);
         } else {
             this.setState({
@@ -72,23 +72,23 @@ class LoginPage extends React.Component<Props, State> {
 
     render() {
         return (
-            <div className="container">
-                <form className="form" onSubmit={this.handleBegin}>
-                    <h1 className="title">Choose Thy Adventerous Name Now</h1>
+            <div className={styles.container}>
+                <form className={styles.form} onSubmit={this.handleBegin}>
+                    <h1 className={styles.title}>Choose Thy Adventerous Name Now</h1>
                     <br />
-                    <div className="thy-name-border">
+                    <div className={styles['thy-name-border']}>
                         <input
-                            className="thy-name"
+                            className={styles['thy-name']}
                             type="text"
                             placeholder="Thy Adventerous Name..."
                             onChange={this.updateUsername}
                         ></input>
                     </div>
                     <br />
-                    <p className={this.state.message.classes}>{this.state.message.message}</p>
+                    <p className={styles[this.state.message.classes]}>{this.state.message.message}</p>
                     <br />
                     <button
-                        className="begin-adventure"
+                        className={styles['begin-adventure']}
                         type="submit"
                         onClick={this.handleBegin}
                     >Begin Ye Adventure...</button>
