@@ -9,7 +9,7 @@ type Props = RouteComponentProps;
 
 interface State {
     username?: string;
-    error: {
+    message: {
         classes: string;
         message: string;
     };
@@ -18,9 +18,9 @@ interface State {
 class LoginPage extends React.Component<Props, State> {
     state: State = {
         username: '',
-        error: {
-            classes: 'error hidden',
-            message: '',
+        message: {
+            classes: 'neutral',
+            message: 'Choose Wisely!',
         }
     };
 
@@ -35,10 +35,18 @@ class LoginPage extends React.Component<Props, State> {
         if (res.success) {
             sessionStorage.setItem('sessionKey', res.sessionKey);
             sessionStorage.setItem('username', res.username);
-            this.props.history.push('/lobby');
+            this.setState({
+                message: {
+                    classes: 'success',
+                    message: 'Thou Hast Chosen Goodly!',
+                }
+            });
+            setTimeout(() => {
+                this.props.history.push('/lobby');
+            }, 1200);
         } else {
             this.setState({
-                error: {
+                message: {
                     classes: 'error',
                     message: 'Thou Hast Chosen Poorly!',
                 }
@@ -64,22 +72,26 @@ class LoginPage extends React.Component<Props, State> {
 
     render() {
         return (
-            <div>
-                <h1 className="title">Choose Thy Adventerous Name Now</h1>
-                <form onSubmit={this.handleBegin}>
-                    <div className="group">
-                    <input
-                        className="group-front"
-                        type="text"
-                        placeholder="Username..."
-                        onChange={this.updateUsername}
-                    ></input>
-                    <button
-                        className="group-end"
-                        type="submit"
-                    >Begin Ye Adventure...</button>
+            <div className="container">
+                <form className="form" onSubmit={this.handleBegin}>
+                    <h1 className="title">Choose Thy Adventerous Name Now</h1>
+                    <br />
+                    <div className="thy-name-border">
+                        <input
+                            className="thy-name"
+                            type="text"
+                            placeholder="Thy Adventerous Name..."
+                            onChange={this.updateUsername}
+                        ></input>
                     </div>
-                    <p className={this.state.error.classes}>{this.state.error.message}</p>
+                    <br />
+                    <p className={this.state.message.classes}>{this.state.message.message}</p>
+                    <br />
+                    <button
+                        className="begin-adventure"
+                        type="submit"
+                        onClick={this.handleBegin}
+                    >Begin Ye Adventure...</button>
                 </form>
             </div>
         );
