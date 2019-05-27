@@ -1,16 +1,16 @@
 import * as React from 'react';
 import { login } from '../components/api';
 import { LoginRequest, LoginResponse } from '../api_objects/login_api';
-import { Redirect } from 'react-router';
-import { RouteProps } from 'react-router-dom';
+import { RouteComponentProps } from 'react-router-dom';
 
-type Props = RouteProps;
+import './login.css';
+
+type Props = RouteComponentProps;
 
 interface State {
     username?: string;
-    toLobby?: boolean;
-    error?: {
-        show: boolean;
+    message: {
+        classes: string;
         message: string;
     };
 }
@@ -18,10 +18,9 @@ interface State {
 class LoginPage extends React.Component<Props, State> {
     state: State = {
         username: '',
-        toLobby: false,
-        error: {
-            show: false,
-            message: '',
+        message: {
+            classes: 'neutral',
+            message: 'Choose Wisely!',
         }
     };
 
@@ -34,14 +33,22 @@ class LoginPage extends React.Component<Props, State> {
 
     onLogin(res: LoginResponse): void {
         if (res.success) {
+            sessionStorage.setItem('sessionKey', res.sessionKey);
+            sessionStorage.setItem('username', res.username);
             this.setState({
-                toLobby: true
+                message: {
+                    classes: 'success',
+                    message: 'Thou Hast Chosen Goodly!',
+                }
             });
+            setTimeout(() => {
+                this.props.history.push('/lobby');
+            }, 1200);
         } else {
             this.setState({
-                error: {
-                    show: true,
-                    message: 'Username not available',
+                message: {
+                    classes: 'error',
+                    message: 'Thou Hast Chosen Poorly!',
                 }
             });
         }
@@ -53,34 +60,39 @@ class LoginPage extends React.Component<Props, State> {
         });
     }
 
-    handleBegin(/*event: React.MouseEvent*/) {
-        let req: LoginRequest = { username: this.state.username || '' };
+    handleBegin(event: React.FormEvent) {
+        event.preventDefault();
+        let req: LoginRequest = new LoginRequest();
+        req.username = this.state.username || '';
+        if (sessionStorage.getItem('sessionKey') !== undefined) {
+            req.sessionKey = sessionStorage.getItem('sessionKey') || '';
+        }
         login(req, this.onLogin);
     }
 
     render() {
-        if (this.state.toLobby === true) {
-            return <Redirect to={'/lobby/' + this.state.username} />;
-        }
-
-        let error = <span></span>;
-        if(this.state.error && this.state.error.show) {
-            error = <p>{this.state.error.message}</p>;
-        }
-
         return (
-            <div>
-                <h1>Cooperative Text-Adventure</h1>
-                <input
-                    type="text"
-                    placeholder="Username..."
-                    onChange={this.updateUsername}
-                ></input>
-                {error}
-                <button
-                    type="submit"
-                    onClick={this.handleBegin}
-                >Begin</button>
+            <div className="container">
+                <form className="form" onSubmit={this.handleBegin}>
+                    <h1 className="title">Choose Thy Adventerous Name Now</h1>
+                    <br />
+                    <div className="thy-name-border">
+                        <input
+                            className="thy-name"
+                            type="text"
+                            placeholder="Thy Adventerous Name..."
+                            onChange={this.updateUsername}
+                        ></input>
+                    </div>
+                    <br />
+                    <p className={this.state.message.classes}>{this.state.message.message}</p>
+                    <br />
+                    <button
+                        className="begin-adventure"
+                        type="submit"
+                        onClick={this.handleBegin}
+                    >Begin Ye Adventure...</button>
+                </form>
             </div>
         );
     }
