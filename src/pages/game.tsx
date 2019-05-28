@@ -63,10 +63,19 @@ function HintsArea(props: DataProp) {
 	);
 }
 
-function Template(props: DataProp) {
+function ListTemplate(props: DataProp) {
+	let listElement;
+	if (props.dataElms !== undefined) {
+		listElement = [];
+		listElement = props.dataElms.map((e) => {
+			return (<li>{e}</li>);
+		});
+	}
 	return (
 		<div className={styles['column']}>
-			
+			<p>ListTemplate</p>
+			<p>{props.dataStr}</p>
+			<ol>{listElement}</ol>
 		</div>
 	);
 }
@@ -78,7 +87,7 @@ class GamePage extends React.Component<Props, State> {
 		this.state = {
 			areaText: 'The things that have happened',
 			cmdText: 'No Cmds',
-			hintText: 'No hints :(',
+			hintText: 'Some minor hints :}',
 			worldText: 'It is a small world after all',
 			characterText: 'go look in a mirror',
 			inventoryText: 'your stuff good sir',
@@ -101,22 +110,13 @@ class GamePage extends React.Component<Props, State> {
 				</div>
 				<div className={styles['column']}>
 					<div className={styles['row']}>
-						<div className={styles['column']}>
-							<p>World state</p>
-							<p>{this.state.areaText}</p>
-						</div>
+						<ListTemplate dataStr={this.state.worldText} dataElms={['one', 'two', 'three']}/>
 					</div>
 					<div className={styles['row']}>
-						<div className={styles['column']}>
-							<p>Character State</p>
-							<p>{this.state.areaText}</p>
-						</div>
+						<ListTemplate dataStr={this.state.worldText}/>
 					</div>
 					<div className={styles['row']}>
-						<div className={styles['column']}>
-							<p>Inventory</p>
-							<p>{this.state.areaText}</p>
-						</div>
+						<ListTemplate dataElms={['one', 'two', 'three']}/>
 					</div>
 				</div>
 			</div>
