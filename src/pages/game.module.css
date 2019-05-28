@@ -1,3 +1,19 @@
-.divClass {
-	background-color: red;
+/*This css kind of sucks wish for bootstrap...*/
+
+/*
+Row to contain column
+*/
+.row {
+	background-color:blue;
+	display:flex;
+}
+
+/*
+Column auto adjusts width
+*/
+.column {
+	background-color:red;
+	flex: auto;
+	height: 100%;
+	margin: 10px;
 }
