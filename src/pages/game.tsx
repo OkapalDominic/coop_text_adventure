@@ -11,13 +11,18 @@ interface State {
 	characterText: string;
 	inventoryText: string;
 }
+interface DataProp {
+	dataStr: string;
+}
 
-function TextArea(props: Props) {
+function TextArea(props: DataProp) {
 	return (
-		<p>Text Area</p>
-		<textarea readOnly>
-			{props.areaText}
-		</textarea>
+		<div>
+			<p>Text Area</p>
+			<textarea readOnly>
+				{props.dataStr}
+			</textarea>
+		</div>
 	);
 }
 
@@ -40,7 +45,7 @@ class GamePage extends React.Component<Props, State> {
 				<div className={styles['column']}>
 					<div className={styles['row']}>
 						<div className={styles['column']}>
-							
+							<TextArea dataStr={this.state.areaText}/>
 						</div>
 					</div>
 					<div className={styles['row']}>
