@@ -14,6 +14,7 @@ interface State {
 }
 interface DataProp {
 	dataStr?: string;
+	dataElms?: string[];
 }
 
 function TextArea(props: DataProp) {
@@ -34,6 +35,25 @@ function InputArea(props: DataProp) {
 			Command: 
 			<input type='text' value={props.dataStr} />
 			<input type='submit' value='Enter' />
+		</div>
+	);
+}
+
+function HintsArea(props: DataProp) {
+	let hintElement;
+	if (props.dataElms !== undefined) {
+		hintElement = [];
+		// currently slice so only 10 hints max
+		props.dataElms.slice(0,10).map((e) => {
+			hintElement.push(<button>{e}</button>);
+		});
+	} else {
+		hintElement = <p>No Hints</p>;
+	}
+	return (
+		<div className={styles['column']}>
+			<p>Hint Area</p>
+			{hintElement}
 		</div>
 	);
 }
@@ -71,10 +91,7 @@ class GamePage extends React.Component<Props, State> {
 						<InputArea dataStr={this.state.cmdText} />
 					</div>
 					<div className={styles['row']}>
-						<div className={styles['column']}>
-							<p>Hints</p>
-							<p>{this.state.areaText}</p>
-						</div>
+						<HintsArea dataElms={this.state.hintText.split(' ')}/>
 					</div>
 				</div>
 				<div className={styles['column']}>
