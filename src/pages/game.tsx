@@ -6,22 +6,42 @@ import styles from './game.module.css';
 type Props = RouteComponentProps;
 interface State {
 	areaText: string;
+	cmdText: string;
 	hintText: string;
 	worldText: string;
 	characterText: string;
 	inventoryText: string;
 }
 interface DataProp {
-	dataStr: string;
+	dataStr?: string;
 }
 
 function TextArea(props: DataProp) {
 	return (
-		<div>
-			<p>Text Area</p>
+		<div className={styles['column']}>
+			<p>Text Area </p>
 			<textarea readOnly>
 				{props.dataStr}
 			</textarea>
+		</div>
+	);
+}
+
+function InputArea(props: DataProp) {
+	return (
+		<div className={styles['column']}>
+			<p>Input Area</p>
+			Command: 
+			<input type='text' value={props.dataStr} />
+			<input type='submit' value='Enter' />
+		</div>
+	);
+}
+
+function Template(props: DataProp) {
+	return (
+		<div className={styles['column']}>
+			
 		</div>
 	);
 }
@@ -32,6 +52,7 @@ class GamePage extends React.Component<Props, State> {
 		super(props);
 		this.state = {
 			areaText: 'The things that have happened',
+			cmdText: 'No Cmds',
 			hintText: 'No hints :(',
 			worldText: 'It is a small world after all',
 			characterText: 'go look in a mirror',
@@ -44,15 +65,10 @@ class GamePage extends React.Component<Props, State> {
 			<div className={styles['row']}>
 				<div className={styles['column']}>
 					<div className={styles['row']}>
-						<div className={styles['column']}>
-							<TextArea dataStr={this.state.areaText}/>
-						</div>
+						<TextArea dataStr={this.state.areaText} />
 					</div>
 					<div className={styles['row']}>
-						<div className={styles['column']}>
-							<p>Input Area</p>
-							<p>{this.state.areaText}</p>
-						</div>
+						<InputArea dataStr={this.state.cmdText} />
 					</div>
 					<div className={styles['row']}>
 						<div className={styles['column']}>
