@@ -45,8 +45,13 @@ function HintsArea(props: DataProp) {
 		hintElement = [];
 		// currently slice so only 10 hints max
 		props.dataElms.slice(0,10).map((e) => {
-			hintElement.push(<button>{e}</button>);
+			if (e.length > 0) {
+				hintElement.push(<button>{e}</button>);
+			}
 		});
+		if (hintElement.length === 0) {
+			hintElement = <p>No Hints</p>
+		}
 	} else {
 		hintElement = <p>No Hints</p>;
 	}
