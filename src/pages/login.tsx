@@ -8,7 +8,7 @@ import styles from './login.module.css';
 type Props = RouteComponentProps;
 
 interface State {
-    username?: string;
+    username: string;
     message: {
         classes: string;
         message: string;
@@ -33,8 +33,14 @@ class LoginPage extends React.Component<Props, State> {
 
     onLogin(res: LoginResponse): void {
         if (res.success) {
-            sessionStorage.setItem('sessionKey', res.sessionKey);
-            sessionStorage.setItem('username', res.username);
+            sessionStorage.setItem('username', this.state.username);
+            sessionStorage.setItem('room', res.room);
+            if (res.players.length > 1) {
+                let p2: number = this.state.username === res.players[0] ? 1 : 0;
+                sessionStorage.setItem('player2', res.players[p2]);
+            } else {
+                sessionStorage.setItem('player2', '');
+            }
             this.setState({
                 message: {
                     classes: 'success',
