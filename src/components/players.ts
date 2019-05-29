@@ -1,6 +1,6 @@
 // Keeps track of all players
 // Adds and removes them
-
+import * as socketIo from 'socket.io';
 import Player from './player';
 
 
@@ -9,22 +9,32 @@ const disconnectTimeout = 3000;
 export default class Players {
     private players: Player[] = [];
 
+    public create(session: string, socket: socketIo.Socket): Player {
+        let player: Player = new Player(socket);
+        this.players.push(player);
+        player.sessionKey(session);
+        return player;
+    }
+
     /*
     **  @param {player}: The player which disconnected
     **  After timeout will remove player if they don't reconnect.
     */
-    public disconnected(player: Player): void {
+    public disconnected(player: Player, cb: (disconnected: boolean, player: Player, t: any) => void, t: any): void {
         let pindex: number = this.getPlayerBySession(player.sessionKey());
         if (pindex !== -1) {
-            this.players[pindex].connected(false);
+            this.players[pindex].loggedIn(false);
             this.disconnectTimeout().then(() => {
                 pindex = this.getPlayerBySession(player.sessionKey());
-                if (!this.players[pindex].connected()) {
+                if (!this.players[pindex].loggedIn()) {
                     // If not connected, then remove.
                     this.players.splice(pindex, 1);
+                    console.log('player disconnected');
+                    cb(true, player, t);
                 }
             });
         }
+        cb(false, player, t);
     }
 
     /*
@@ -43,7 +53,7 @@ export default class Players {
             if (player !== old) {
                 // We have a reconnection
                 player = old;
-                player.connected(true);
+                player.loggedIn(true);
             }
         } else {
             // We have a new player
@@ -61,6 +71,14 @@ export default class Players {
             }
         }
         return [success, player];
+    }
+
+    public getUsername(sessionKey: string): string {
+        let i = this.getPlayerBySession(sessionKey);
+        if(i === -1 ) {
+            return undefined;
+        }
+        return this.players[i].username();
     }
 
     private usernameValid(username: string): boolean {
