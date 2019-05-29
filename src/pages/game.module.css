@@ -4,16 +4,27 @@
 Row to contain column
 */
 .row {
-	background-color:blue;
-	display:flex;
+	background-color: rgb(94, 109, 104);
+	display: flex;
 }
 
 /*
 Column auto adjusts width
 */
 .column {
-	background-color:red;
+	background-color:rgb(233, 220, 146);
 	flex: auto;
 	height: 100%;
 	margin: 10px;
+}
+
+div.column div.row {
+	border: 5px solid black;
+	border-radius: 5px;
+}
+
+textarea {
+	width: 90%;
+	height: 100%;
+	min-height:11rem;
 }
