@@ -2,14 +2,10 @@ import React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import styles from './tavern.module.css';
 import { LoginResponse } from '../api_objects/login_api';
-import { enterRoom, leftRoom, removeAllListeners, readyToPlay } from '../components/api';
-import { LeftRoom, ReadyToPlay } from '../api_objects/lobby_messages';
+import { enterRoom, leftRoom, removeAllListeners, readyToPlay, gameSetup } from '../components/api';
+import { LeftRoom, ReadyToPlay, GameSetup } from '../api_objects/lobby_messages';
 
-interface MatchParams {
-    username: string;
-}
-
-type Props = RouteComponentProps<MatchParams>;
+type Props = RouteComponentProps;
 
 interface State {
     room: string;
@@ -34,6 +30,7 @@ class LobbyPage extends React.Component<Props, State> {
         this.onLeaveRoom = this.onLeaveRoom.bind(this);
         this.handleReadyToPlay = this.handleReadyToPlay.bind(this);
         this.onReadyToPlay = this.onReadyToPlay.bind(this);
+        this.onGameSetup = this.onGameSetup.bind(this);
     }
 
     componentDidMount() {
@@ -41,10 +38,15 @@ class LobbyPage extends React.Component<Props, State> {
         enterRoom(this.onEnterRoom);
         leftRoom(this.onLeaveRoom);
         readyToPlay({ ready: false, username: sessionStorage.getItem('username') || '' }, this.onReadyToPlay);
+        gameSetup(this.onGameSetup);
     }
 
     componentWillUnmount() {
         removeAllListeners();
+    }
+
+    onGameSetup(res: GameSetup): void {
+        this.props.history.push('/game');
     }
 
     onEnterRoom(res: LoginResponse): void {
@@ -77,7 +79,7 @@ class LobbyPage extends React.Component<Props, State> {
     }
 
     handleReadyToPlay(): void {
-        readyToPlay({ ready: !this.state.userReady, username: this.state.username}, this.onReadyToPlay);
+        readyToPlay({ ready: !this.state.userReady, username: this.state.username }, this.onReadyToPlay);
     }
 
     render() {
@@ -88,9 +90,10 @@ class LobbyPage extends React.Component<Props, State> {
                 <h1 className={styles.title}>The Stinking Dragon Welp</h1>
                 <br />
                 <div className={styles.intro}>
-                    <p>Cautiously, you enter the only tavern in town</p>
+                    <p>As you walk into town, you are directed toward <strong>tavern {this.state.room}</strong>.</p>
+                    <p>Cautiously, you enter the tavern and look around.</p>
                     <p>The bartender greets you: "Welcome {this.state.username}, have a seat over there."</p>
-                    <p>Unsure how he knows your name, you reluctantly sit at the table alone, near a dead fire.</p>
+                    <p>Unsure how he knows your name, you reluctantly walk toward the table he pointed at.</p>
                 </div>
                 <br />
                 <div className={styles.intro}>

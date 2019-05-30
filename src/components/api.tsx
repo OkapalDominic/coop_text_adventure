@@ -1,7 +1,7 @@
 import openSocket from 'socket.io-client';
 
 import { LoginRequest, LoginResponse, Connected } from '../api_objects/login_api';
-import { LeftRoom, ReadyToPlay } from '../api_objects/lobby_messages';
+import { LeftRoom, ReadyToPlay, GameSetup } from '../api_objects/lobby_messages';
 
 const socket: SocketIOClient.Socket = openSocket('http://localhost:7777');
 // If you want to test on other devices on your network...
@@ -37,4 +37,8 @@ export function leftRoom(cb: (res: LeftRoom) => void): void {
 export function readyToPlay(req: ReadyToPlay, cb: (res: ReadyToPlay) => void): void {
     socket.emit('readyToPlay', req);
     socket.on('readyToPlay', (res: ReadyToPlay) => cb(res));
+}
+
+export function gameSetup(cb: (res: GameSetup) => void): void {
+    socket.on('gameSetup', (res: GameSetup) => cb(res));
 }
