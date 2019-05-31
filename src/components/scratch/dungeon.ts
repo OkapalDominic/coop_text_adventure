@@ -5,7 +5,7 @@ import Item from './item'
 
 // manages the current Dungeon
 export class Dungeon{
-	// name description dungeon
+	// name/description dungeon
 	private title: string; 
 	private description: string;
 	
