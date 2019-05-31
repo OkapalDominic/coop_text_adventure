@@ -1,7 +1,4 @@
-import Entity from './entity.ts'
-import Player from './player.ts'
-import Area from './area.ts'
-import Item from './item'
+import Area from './area'
 
 // manages the current Dungeon
 export class Dungeon{
@@ -11,7 +8,7 @@ export class Dungeon{
 	
 	// all Areas currently in the Dungeon
 	private areas: Area[];
-	private currArea: number;
+	private area: Area;
 	
 	/* for later...
 	// players in this game session
@@ -35,14 +32,31 @@ export class Dungeon{
 		*/
 	}
 	
+	/*
+	enter room >> will enter room if room exisits
+	*/
 	ParseCommand(command:string): void {
 		// split on spaces and only 4 arguments [cmd object target JunkThatIsIgrnored]
 		let cmd = command.split(' ', 3);
-		switch (cmd) {
+		switch (cmd[0]) {
 			case 'enter':
-				this.areas.findIndex()
+				this.enter(cmd[1]);
 			default:
-				console.log('error unknown command')
+				console.log('error unknown command');
+		}
+	}
+	
+	enter(target: string): void {
+		let i = this.areas.findIndex((a) => {
+			return a.getTitle() === target;
+		});
+		if (i > -1) {
+			this.area.leave();
+			this.area = this.areas[i];
+			this.area.enter();
+		} else {
+			console.log(`${target} does not exisit in the dungeon... You remain where you are.`);
 		}
 	}
 }
+export default Dungeon;

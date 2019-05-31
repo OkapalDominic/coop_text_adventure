@@ -1,27 +1,33 @@
 // base class to inherit from
-export class Entity {
+class Entity {
 	protected name: string;
 	protected description: string;
 	
-	constructor();
+	//constructor();
 	constructor(n:string, d:string) {
-		name = n;
-		description = d;
+		this.name = n;
+		this.description = d;
 	}
 	
-	Examine(): void {
-		
+	//Examine();
+	Examine(target: string): void {
+		console.log('unimplemented');
 	}
 	
-	Interact(): void {
-		
+	//Interact();
+	Interact(target: string): void {
+		console.log('unimplemented');
 	}
 	
-	Activate(): void {
-		
+	//Activate();
+	Activate(target: string): void {
+		console.log('unimplemented');		
 	}
 	
-	Chat(): void {
-		
+	//Chat();
+	Chat(target: string): void {
+		console.log('unimplemented');
 	}
 }
+
+export default Entity;
