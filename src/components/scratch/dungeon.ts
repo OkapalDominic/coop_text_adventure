@@ -50,14 +50,35 @@ export class Dungeon{
 		this.title = newTitle;
 	}
 	
+	// getter/setter for Dungeon description
+	getDescription(): string { return this.description; }
+	setDescription(newDesc: string): void { this.description = newDesc; }
+	
 	// add area
 	addArea(a: Area): boolean {
+		let i = this.hasArea(a.getTitle());
+		if (i > -1) {
+			console.log(`An area with name "${a.getTitle()}" already exits... unable to add`)
+			return false;
+		}
 		
-		return false; 
+		this.areas = this.areas.concat([a]);
+		console.log(`added "${a.getTitle()}" to areas in the dungeon.`);
+		
+		if (this.area === undefined) {
+			this.area = this.areas[0];
+			this.area.enter();
+		}
+		return true; 
 	}
 	
-	// get area (broken)
-	getArea(n: number): Area {
+	// get area from areas (check return is undefined...)
+	getElementAreas(n: number): Area {
+		return this.areas[n];
+	}
+	
+	//
+	getCurrentArea(): Area {
 		return this.area;
 	}
 	
@@ -67,7 +88,7 @@ export class Dungeon{
 			return a.getTitle() === target;
 		});
 		if (i < 0) {
-			console.log(`${target}" does not exisit in the dungeon...`);
+			console.log(`"${target}" does not exisit in the dungeon...`);
 		}
 		return i;
 	}
@@ -76,15 +97,17 @@ export class Dungeon{
 	removeArea(target: string): boolean {
 		let i = this.hasArea(target);
 		if (i > -1) {
-			
-			return true
+			if (this.areas[i] === this.area) {
+				console.log('currently in an area being removed')
+			}
+			const af = this.areas.slice(0,i);
+			const ab = this.areas.slice(i+1);
+			this.areas = af.concat(ab);
+			console.log(`removed "${target}" from dungeon.`);
+			return true;
 		}
 		return false;
 	}
-	
-	// getter/setter for Area description
-	getDescription(): string { return this.description; }
-	setDescription(newDesc: string): void { this.description = newDesc; }
 	
 	/*
 	enter room >> will enter room if room exisits
@@ -104,9 +127,13 @@ export class Dungeon{
 	enterRoom(target: string): void {
 		let i = this.hasArea(target);
 		if (i > -1) {
-			this.area.leave();
-			this.area = this.areas[i];
-			this.area.enter();
+			if (this.areas[i] === this.area) {
+				console.log(`You already are in "${target}"`);
+			} else {
+				this.area.leave();
+				this.area = this.areas[i];
+				this.area.enter();
+			}
 		}
 	}
 }

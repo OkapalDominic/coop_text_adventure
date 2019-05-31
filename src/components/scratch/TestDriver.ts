@@ -5,7 +5,7 @@
 import Dungeon from './dungeon'
 import Area from './area'
 
-console.log('--------Testing Area--------')
+console.log('--------Testing Area--------');
 let a = new Area();
 console.log(a.getTitle());
 a.setTitle('InterestingArea');
@@ -15,18 +15,25 @@ a.setDescription('A very interesting place');
 console.log(a.getDescription());
 a.enter();
 a.leave();
-console.log('--------Done Area--------')
+console.log('--------Done Area--------');
 
-console.log('--------Testing Dungeon--------')
+console.log('--------Testing Dungeon--------');
 let d = new Dungeon();
 console.log(d.getTitle());
-d.setTitle('WonderfulDungeon')
+d.setTitle('WonderfulDungeon');
 console.log(d.getTitle());
 console.log(d.getDescription());
-d.setDescription('Snow and rocks create the walls')
+d.setDescription('A sense of wonder fills the air!');
 console.log(d.getDescription());
-d.parseCommand('Baloney Beef Veal Pork')
-d.parseCommand('enter InterestingArea')
-console.log('--------Done Dungeon--------')
+d.parseCommand('Baloney Beef Veal Pork');
+d.parseCommand('enter InterestingArea');
+d.addArea(a);
+d.parseCommand('enter InterestingArea');
+d.addArea(a);
+console.log(d.getCurrentArea());
+d.removeArea('InterestingArea');
+console.log(d.getElementAreas(0));
+console.log(d.getCurrentArea());
+console.log('--------Done Dungeon--------');
 
 console.log('End of tests.');
