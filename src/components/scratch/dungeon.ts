@@ -20,8 +20,11 @@ export class Dungeon{
 	*/
 	
 	constructor() {
-		this.title = 'Horrible Dungeon'
+		this.title = 'HorribleDungeon'
 		this.description = 'It is not scary... just bad.'
+		
+		this.areas = [];
+		this.area = undefined;
 		
 		/* for later...
 		this.player1 = new Player(); // change this
@@ -32,21 +35,41 @@ export class Dungeon{
 		*/
 	}
 	
+	// getter/setter for Area title
+	// note Dungeon name should not contain spaces
+	getTitle(): string {
+		if (/\s/.test(this.title)) {
+			console.log(`Warning whiteSpace detected in "${this.title}"`);
+		}
+		return this.title;
+	}
+	setTitle(newTitle: string): void {
+		if (/\s/.test(newTitle)) {
+			console.log(`Warning whiteSpace detected in "${newTitle}"`);
+		}
+		this.title = newTitle;
+	}
+	
+	// getter/setter for Area description
+	getDescription(): string { return this.description; }
+	setDescription(newDesc: string): void { this.description = newDesc; }
+	
 	/*
 	enter room >> will enter room if room exisits
 	*/
-	ParseCommand(command:string): void {
+	parseCommand(command:string): void {
 		// split on spaces and only 4 arguments [cmd object target JunkThatIsIgrnored]
 		let cmd = command.split(' ', 3);
 		switch (cmd[0]) {
 			case 'enter':
-				this.enter(cmd[1]);
+				this.enterRoom(cmd[1]);
+				break;
 			default:
-				console.log('error unknown command');
+				console.log(`error unknown command "${cmd[0]}"`);
 		}
 	}
 	
-	enter(target: string): void {
+	enterRoom(target: string): void {
 		let i = this.areas.findIndex((a) => {
 			return a.getTitle() === target;
 		});
@@ -55,7 +78,7 @@ export class Dungeon{
 			this.area = this.areas[i];
 			this.area.enter();
 		} else {
-			console.log(`${target} does not exisit in the dungeon... You remain where you are.`);
+			console.log(`"${target}" does not exisit in the dungeon... You remain where you are.`);
 		}
 	}
 }
