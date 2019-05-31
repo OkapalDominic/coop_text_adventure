@@ -31,3 +31,9 @@ class Entity {
 }
 
 export default Entity;
+
+
+/*
+IDEA
+pass the calling object so we can edit it if needed!!!
+*/

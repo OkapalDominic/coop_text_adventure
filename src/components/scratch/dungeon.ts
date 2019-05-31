@@ -50,6 +50,38 @@ export class Dungeon{
 		this.title = newTitle;
 	}
 	
+	// add area
+	addArea(a: Area): boolean {
+		
+		return false; 
+	}
+	
+	// get area (broken)
+	getArea(n: number): Area {
+		return this.area;
+	}
+	
+	// has Area
+	hasArea(target: string): number {
+		let i = this.areas.findIndex((a) => {
+			return a.getTitle() === target;
+		});
+		if (i < 0) {
+			console.log(`${target}" does not exisit in the dungeon...`);
+		}
+		return i;
+	}
+	
+	// remove area
+	removeArea(target: string): boolean {
+		let i = this.hasArea(target);
+		if (i > -1) {
+			
+			return true
+		}
+		return false;
+	}
+	
 	// getter/setter for Area description
 	getDescription(): string { return this.description; }
 	setDescription(newDesc: string): void { this.description = newDesc; }
@@ -70,15 +102,11 @@ export class Dungeon{
 	}
 	
 	enterRoom(target: string): void {
-		let i = this.areas.findIndex((a) => {
-			return a.getTitle() === target;
-		});
+		let i = this.hasArea(target);
 		if (i > -1) {
 			this.area.leave();
 			this.area = this.areas[i];
 			this.area.enter();
-		} else {
-			console.log(`"${target}" does not exisit in the dungeon... You remain where you are.`);
 		}
 	}
 }
