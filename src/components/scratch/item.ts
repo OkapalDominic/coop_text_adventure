@@ -1,37 +1,30 @@
-//items that can be picked up/used
+import Entity from './entity'
 
-class Item {
-	// name/description dungeon
-	private title: string; 
-	private description: string;
+//items that can be picked up/used
+class Item extends Entity{
+	// variables unique to Item
+	/* Things to store in entity.state possibly add refence to it
+		---?
+	*/
 	
-	constructor() {
-		this.title = 'BoringItem';
-		this.description = 'Seems to be broken';
-	}
-	
-	//------------------------------------------------------------
-	// title description
-	//------------------------------------------------------------
+	// ----------------------------------
+	// constructor
+	// ----------------------------------
+	constructor(n: string, d: string, p: Entity) {
+		super(n, d, p);
 		
-	// getter/setter for Area title
-	// note area name should not contain spaces
-	getTitle(): string {
-		if (/\s/.test(this.title)) {
-			console.log(`Warning whiteSpace detected in "${this.title}"`);
-		}
-		return this.title;
+		this.setOnPickUp(function() {
+			console.log(`You have picked up "${this.name}"!`);
+			console.log(this.description);
+		});
+		this.setOnUse(function() {
+			console.log(`You have used "${this.name}".`);
+			console.log(`It should be removed from "${this.parentEntity.getName()}".`);
+		});
+		this.setOnDrop(function() {
+			console.log(`You have dropped "${this.name}"...`);
+		});
 	}
-	setTitle(newTitle: string): void {
-		if (/\s/.test(newTitle)) {
-			console.log(`Warning whiteSpace detected in "${newTitle}"`);
-		}
-		this.title = newTitle;
-	}
-	
-	// getter/setter for Area description
-	getDescription(): string { return this.description; }
-	setDescription(newDesc: string): void { this.description = newDesc; }
 }
 
 export default Item;
