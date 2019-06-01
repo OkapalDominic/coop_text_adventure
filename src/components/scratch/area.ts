@@ -1,5 +1,7 @@
 // areas that players can go to
 
+import Item from './item'
+
 export class Area {
 	// name/description Area
 	private title: string;
@@ -8,10 +10,14 @@ export class Area {
 	// what other areas can be accessed from this area
 	private connectedAreas: Area[];
 	
+	// items in the area that can be picked up
+	private items: Item[];
+	
 	constructor() {
 		this.title = 'BoringArea';
 		this.description = 'Nothing to do';
 		this.connectedAreas = [];
+		this.items = [];
 	}
 	
 	//------------------------------------------------------------
@@ -43,21 +49,37 @@ export class Area {
 		
 	// add item
 	addItem(i: Item): boolean {
+		this.items = this.items.concat([i]);
+		console.log(`added "${i.getTitle()}" to "${this.title}.`);
 		return true;
 	}
 	
 	// get item
 	getItem(n: number): Item {
-		return this.items[0];
+		return this.items[n];
 	}
 	
 	// has item
 	hasItem(target: string): number {
-		return -1;
+		let n = this.items.findIndex((i) => {
+			return i.getTitle() === target;
+		});
+		if (n < 0) {
+			console.log(`"${target}" is not in "${this.title}"...`);
+		}
+		return n;
 	}
 	
 	// remove item
-	removeItem(): boolean {
+	removeItem(target: string): boolean {
+		let i = this.hasItem(target);
+		if (i > -1) {
+			const f = this.items.slice(0, i);
+			const b = this.items.slice(i+1);
+			this.items = f.concat(b);
+			console.log(`removed "${target}" from "${this.title}`);
+			return true;
+		}
 		return false;
 	}
 		
