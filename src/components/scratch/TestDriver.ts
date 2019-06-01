@@ -4,6 +4,7 @@
 
 import Entity from './entity'
 import Dungeon from './dungeon'
+import Player from './player'
 import Area from './area'
 import Item from './item'
 
@@ -12,9 +13,10 @@ import Item from './item'
 // ----------------------------------
 console.log('Start of tests.');
 //testEntity();
-//testItem();
-//testArea();
 //testDungeon();
+testPlayer();
+//testArea();
+//testItem();
 console.log('End of tests.');
 
 // ----------------------------------
@@ -64,7 +66,9 @@ function testItem(): void {
 	console.log('--------Testing Item--------');
 	
 	// create item
-	let i = new Item();
+	let d = new Dungeon('TestingDungeon', 'A dungeon that is being tested');
+	let a = new Area('TestArea', 'A tiny room to test things.', d);
+	let i = new Item('TestItem', 'A quality testing item', a);
 	
 	// display item
 	console.log(i);
@@ -84,17 +88,39 @@ function testArea(): void {
 	console.log('--------Testing Area--------');
 	
 	// create area
-	let a = new Area();
+	let d = new Dungeon('TestingDungeon', 'A dungeon that is being tested');
+	let a = new Area('TestArea', 'A tiny room to test things.', d);
 	
 	// display area
 	console.log(a);
 	
 	
 	
-	// display dungeon
+	// display Area
 	console.log(a);
 	
 	console.log('--------Done Area--------');
+}
+
+// ----------------------------------
+// figureng out if basic features of Player are working
+// ----------------------------------
+function testPlayer(): void {
+	console.log('--------Testing Player--------');
+	
+	// create Player
+	let d = new Dungeon('TestingDungeon', 'A dungeon that is being tested');
+	let p = new Player('TestPlayer', 'A convenient test subject.', d);
+	
+	// display Player
+	console.log(p);
+	
+	
+	
+	// display Player
+	console.log(p);
+	
+	console.log('--------Done Player--------');
 }
 
 // ----------------------------------
