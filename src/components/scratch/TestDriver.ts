@@ -83,6 +83,9 @@ d.addItem(i);
 d.addItem(i);
 console.log(d.getItem(0));
 console.log(d.getItem(1));
+d.removeItem('WonderfulItem');
+console.log(d.getItem(0));
+console.log(d.getItem(1));
 console.log('--------Done Dungeon--------');
 
 console.log('End of tests.');
