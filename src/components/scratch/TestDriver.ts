@@ -158,6 +158,14 @@ function testDungeon(): void {
 	console.log('getPlayer testplayer: ', d.getPlayer('TestPlayer') === p0);
 	console.log('addPlayer duplicate: ', d.addPlayer(p0));
 	
+	// command unreconized
+	console.log('unknown command: ', d.parseCommand('Baloney Beef Pork Veal'));
+	
+	// command to enter room
+	console.log('enter unknow area: ', d.parseCommand('enter Baloney'));
+	console.log('enter room StartArea: ', d.parseCommand('enter StartArea'));
+	console.log('enter room TestArea: ', d.parseCommand('enter TestArea'));
+	
 	// display dungeon
 	console.log(d);
 	

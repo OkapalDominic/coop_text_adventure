@@ -93,7 +93,7 @@ export class Dungeon extends Entity {
 		let cmd = command.split(' ', 3);
 		switch (cmd[0]) {
 			case 'enter':
-				// test if an area exists to enter
+				this.commandEnter(cmd[1]);
 				break;
 			case 'pickup':
 				// see if current area has item to pickup
@@ -107,6 +107,15 @@ export class Dungeon extends Entity {
 			default:
 				console.log(`error unknown command "${cmd[0]}"`);
 		}
+	}
+	
+	commandEnter(arg: string/*, player: Player*/): void {
+		if (this.hasArea(arg) === true) {
+			const a = this.getArea(arg);
+			a.onEnter();
+			return;
+		}
+		console.log(`"Unable to find room "${arg}" to enter...`);
 	}
 }
 export default Dungeon;
