@@ -176,6 +176,15 @@ export class Entity {
 			this.bonDrop();
 		}
 	}
+	
+	// ----------------------------------
+	// static functions useful for testing/getting entities
+	// ----------------------------------
+	static indexEntity(s: string, e: Entity[]): number {
+		return e.findIndex((i) => {
+			return i.getName() === s;
+		});
+	}
 }
 
 export default Entity;

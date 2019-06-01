@@ -1,4 +1,6 @@
 import Entity from './entity'
+import Player from './player'
+import Area from './area'
 
 //items that can be picked up/used
 class Item extends Entity{

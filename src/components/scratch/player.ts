@@ -1,4 +1,5 @@
 import Entity from './entity'
+import Item from './item'
 
 // manages details about Player in dungeon
 export class Player extends Entity {

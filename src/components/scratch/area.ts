@@ -1,4 +1,5 @@
 import Entity from './entity'
+import Item from './item'
 
 // manages an area a player can be in dungeon
 export class Area extends Entity {

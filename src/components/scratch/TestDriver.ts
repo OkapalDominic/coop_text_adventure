@@ -135,7 +135,7 @@ function testDungeon(): void {
 	// display dungeon
 	console.log(d);
 	
-	
+	// add areas to dungeon
 	
 	// display dungeon
 	console.log(d);
