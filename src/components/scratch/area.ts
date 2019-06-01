@@ -1,6 +1,6 @@
 // areas that players can go to
 
-class Area {
+export class Area {
 	// name/description Area
 	private title: string;
 	private description; string;
@@ -14,6 +14,10 @@ class Area {
 		this.connectedAreas = [];
 	}
 	
+	//------------------------------------------------------------
+	// title description
+	//------------------------------------------------------------
+		
 	// getter/setter for Area title
 	// note area name should not contain spaces
 	getTitle(): string {
@@ -33,7 +37,34 @@ class Area {
 	getDescription(): string { return this.description; }
 	setDescription(newDesc: string): void { this.description = newDesc; }
 	
+	//------------------------------------------------------------
+	// item adding/getting/checking/removing
+	//------------------------------------------------------------
+		
+	// add item
+	addItem(i: Item): boolean {
+		return true;
+	}
 	
+	// get item
+	getItem(n: number): Item {
+		return this.items[0];
+	}
+	
+	// has item
+	hasItem(target: string): number {
+		return -1;
+	}
+	
+	// remove item
+	removeItem(): boolean {
+		return false;
+	}
+		
+	//------------------------------------------------------------
+	// cmd logic
+	//------------------------------------------------------------
+		
 	// should be called when entering an area
 	enter() { 
 		console.log(`You have entered ${this.title}`);

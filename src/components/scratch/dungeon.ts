@@ -1,4 +1,5 @@
 import Area from './area'
+import Item from './item'
 
 // manages the current Dungeon
 export class Dungeon{
@@ -10,13 +11,14 @@ export class Dungeon{
 	private areas: Area[];
 	private area: Area;
 	
+	// items that the players carry
+	private items: Item[];
+	
 	/* for later...
 	// players in this game session
 	private player1: Player;
 	private player2: Player;
 	
-	// items that the players carry
-	private items: Item[];
 	*/
 	
 	constructor() {
@@ -26,15 +28,18 @@ export class Dungeon{
 		this.areas = [];
 		this.area = undefined;
 		
+		this.items = [];
+		
 		/* for later...
 		this.player1 = new Player(); // change this
 		this.player2 = new Player(); // change this
-		this.items = []; // should they start with any items
-		this.Areas = [new Area()]; // change this
-		this.currArea = 0; // players start in starting Area
 		*/
 	}
 	
+	//------------------------------------------------------------
+	// title description
+	//------------------------------------------------------------
+		
 	// getter/setter for Area title
 	// note Dungeon name should not contain spaces
 	getTitle(): string {
@@ -54,6 +59,10 @@ export class Dungeon{
 	getDescription(): string { return this.description; }
 	setDescription(newDesc: string): void { this.description = newDesc; }
 	
+	//------------------------------------------------------------
+	// area adding/getting/checking/removing
+	//------------------------------------------------------------
+		
 	// add area
 	addArea(a: Area): boolean {
 		let i = this.hasArea(a.getTitle());
@@ -77,7 +86,7 @@ export class Dungeon{
 		return this.areas[n];
 	}
 	
-	//
+	// get current area
 	getCurrentArea(): Area {
 		return this.area;
 	}
@@ -109,6 +118,34 @@ export class Dungeon{
 		return false;
 	}
 	
+	//------------------------------------------------------------
+	// item adding/getting/checking/removing
+	//------------------------------------------------------------
+		
+	// add item
+	addItem(i: Item): boolean {
+		return true;
+	}
+	
+	// get item
+	getItem(n: number): Item {
+		return this.items[0];
+	}
+	
+	// has item
+	hasItem(target: string): number {
+		return -1;
+	}
+	
+	// remove item
+	removeItem(): boolean {
+		return false;
+	}
+	
+	//------------------------------------------------------------
+	// cmd logic
+	//------------------------------------------------------------
+	
 	/*
 	enter room >> will enter room if room exisits
 	*/
@@ -118,6 +155,9 @@ export class Dungeon{
 		switch (cmd[0]) {
 			case 'enter':
 				this.enterRoom(cmd[1]);
+				break;
+			case 'pickup':
+				this.pickUp(cmd[1]);
 				break;
 			default:
 				console.log(`error unknown command "${cmd[0]}"`);
@@ -135,6 +175,10 @@ export class Dungeon{
 				this.area.enter();
 			}
 		}
+	}
+	
+	pickUp(target: string): void {
+		
 	}
 }
 export default Dungeon;

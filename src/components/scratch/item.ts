@@ -10,6 +10,10 @@ class Item {
 		this.description = 'Seems to be broken';
 	}
 	
+	//------------------------------------------------------------
+	// title description
+	//------------------------------------------------------------
+		
 	// getter/setter for Area title
 	// note area name should not contain spaces
 	getTitle(): string {
