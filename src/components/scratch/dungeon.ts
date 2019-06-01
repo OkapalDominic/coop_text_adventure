@@ -6,6 +6,7 @@ import Area from './area'
 export class Dungeon extends Entity {
 	// variables unique to Dungeon
 	private areas: Area[];
+	private startArea: Area;
 	private players: Player[];
 	
 	// ----------------------------------
@@ -15,18 +16,24 @@ export class Dungeon extends Entity {
 		super(n, d, undefined);
 		
 		this.areas = [];
-		this.addState('areas', areas);
+		this.addState('areas', this.areas);
+		
+		this.startArea = undefined;
+		//this.addState('startArea', this.startArea);
 		
 		this.players = [];
-		this.addState('players', players);
+		this.addState('players', this.players);
 	}
 	
 	//------------------------------------------------------------
 	// add/get area to/in dungeon
 	//------------------------------------------------------------
 	addArea(a: Area): boolean {
-		if (hasArea(a.getName() === false)) {
-			this.areas = this.areas.concat([a]);
+		if (this.hasArea(a.getName()) === false) {
+			this.areas.push(a); // can't reassign refrence (ie concat) without breaking entity.state backing
+			if (this.startArea === undefined) {
+				this.startArea = a;
+			}
 			return true;
 		}
 		console.log(`"${this.name}" already contains a room with name "${a.getName()}"`);
@@ -46,6 +53,34 @@ export class Dungeon extends Entity {
 			return this.areas[i];
 		}
 		console.log(`"${this.name}" does not contain a room with name "${s}"`);
+		return undefined;
+	}
+	
+	//------------------------------------------------------------
+	// add/get Player to/in Player
+	//------------------------------------------------------------
+	addPlayer(p: Player): boolean {
+		if (this.hasPlayer(p.getName()) === false) {
+			this.players.push(p); // can't reassign refrence (ie concat) without breaking entity.state backing
+			return true;
+		}
+		console.log(`"${this.name}" already has player with name "${p.getName()}"`);
+		return false;
+	}
+	
+	hasPlayer(s: string): boolean {
+		if (Entity.indexEntity(s, this.players) > -1) {
+			return true;
+		}
+		return false;
+	}
+	
+	getPlayer(s: string): Player {
+		let i = Entity.indexEntity(s, this.players);
+		if (i > -1) {
+			return this.players[i];
+		}
+		console.log(`"${this.name}" does not have player with name "${s}"`);
 		return undefined;
 	}
 	

@@ -13,10 +13,10 @@ import Item from './item'
 // ----------------------------------
 console.log('Start of tests.');
 //testEntity();
-//testDungeon();
-testPlayer();
-//testArea();
 //testItem();
+//testArea();
+//testPlayer();
+testDungeon();
 console.log('End of tests.');
 
 // ----------------------------------
@@ -131,11 +131,32 @@ function testDungeon(): void {
 	
 	// create dungeon
 	let d = new Dungeon('TestingDungeon', 'A dungeon that is being tested');
+	// test rooms for dungeon
+	let a0 = new Area('StartArea', 'A room in which adventure begins.', d);
+	let a1 = new Area('TestArea', 'A tiny room to test things.', d);
+	// test players for dungeon
+	let p0 = new Player('TestPlayer', 'A convenient test subject.', d);
 	
 	// display dungeon
 	console.log(d);
 	
 	// add areas to dungeon
+	console.log('hasArea no areas: ', d.hasArea('StartArea'));
+	console.log('addArea start: ', d.addArea(a0));
+	console.log('hasArea start: ', d.hasArea('StartArea'));
+	console.log('getArea test: ', d.getArea('StartArea') === a0);
+	console.log('addArea duplicate: ', d.addArea(a0));
+	// test manually add area to state backing
+	console.log(d.getState('areas'))
+	console.log(d.getState('areas').push(a1));
+	console.log(d.getState('areas'))
+	
+	// add Player to dungeon
+	console.log('hasPlayer no player: ', d.hasPlayer('TestPlayer'));
+	console.log('addPlayer start: ', d.addPlayer(p0));
+	console.log('hasPlayer testplayer: ', d.hasPlayer('TestPlayer'));
+	console.log('getPlayer testplayer: ', d.getPlayer('TestPlayer') === p0);
+	console.log('addPlayer duplicate: ', d.addPlayer(p0));
 	
 	// display dungeon
 	console.log(d);

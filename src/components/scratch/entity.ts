@@ -95,6 +95,8 @@ export class Entity {
 		return true;
 	}
 	
+	// warning reassigning values may break inherit classes...
+	// so you know only modify (entity.getState('key').modify();)
 	getState(key: string): any {
 		return this.state[key];
 	}
