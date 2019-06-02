@@ -8,12 +8,12 @@ type CallBackEmpty = () => void;
 // ----------------------------------
 // items that can be picked up/used
 // ----------------------------------
-class Item extends Entity {
+export class Item extends Entity {
 	// variables unique
 	private owner: Player | Area;
 	
 	private bonPickUp: CallBack;
-	private bonUse: CallBack;
+	private bonUse: CallBackEmpty;
 	private bonDrop: CallBack;
 	
 	// ----------------------------------
@@ -27,25 +27,25 @@ class Item extends Entity {
 		pa.addItem(this);
 		
 		// set some default behaviors
-		this.bonPickUp(function(p: Player) {
+		this.bonPickUp = function(p: Player) {
 			console.log(`You have picked up "${this.name}"!`);
 			console.log(this.description);
 			this.owner.removeItem(this.name);
 			this.owner = p;
 			this.owner.addItem(this);
-		});
+		};
 		
-		this.bonUse(function() {
+		this.bonUse = function() {
 			console.log(`Used "${this.name}"... but it did nothing...`);
 			this.owner.removeItem(this.name);
-		});
+		};
 		
-		this.bonDrop(function(a: Area) {
+		this.bonDrop = function(a: Area) {
 			console.log(`You have dropped "${this.name}".`);
 			this.owner.removeItem(this.name);
 			this.owner = a;
 			this.owner.addItem(this);
-		});
+		};
 	}
 	
 	// ----------------------------------

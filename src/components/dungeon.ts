@@ -16,7 +16,7 @@ export class Dungeon extends Entity {
 	// constructor
 	// ----------------------------------
 	constructor(n: string, d: string) {
-		super(n, d, undefined);
+		super(n, d);
 		
 		this.areas = new AreaList();
 		
@@ -59,7 +59,7 @@ export class Dungeon extends Entity {
 		let cmd = command.split(' ', 3);
 		switch (cmd[0]) {
 			case 'enter':
-				this.commandEnter(cmd[1]);
+				this.commandEnter(cmd[1], p);
 				break;
 			case 'pickup':
 				// see if current area has item to pickup
@@ -77,9 +77,11 @@ export class Dungeon extends Entity {
 	
 	commandEnter(arg: string, p: Player): void {
 		if (this.hasArea(arg) === true) {
-			const a = this.getArea(arg);
+			const a = this.areas.getArea(arg);
 			console.log('enter area ', arg)
-			//a.onEnter();
+			/*
+			need logic to set the player to area
+			*/
 			return;
 		}
 		console.log(`"Unable to find room "${arg}" to enter...`);
@@ -106,6 +108,8 @@ export class DungeonFactory {
 		
 		DungeonFactory.symmetricConnection(a0,a1);
 		DungeonFactory.symmetricConnection(a1,a2);
+		
+		return d;
 	}
 	
 	private static oneWayConnection(a1: Area, a2: Area): void {

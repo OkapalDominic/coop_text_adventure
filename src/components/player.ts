@@ -1,3 +1,4 @@
+import {Entity} from './entity';
 import {Dungeon} from './dungeon';
 import {Area} from './area';
 import {Item, ItemList} from './item';
@@ -54,17 +55,18 @@ export class Player extends Entity {
 	enterArea(a: Area): boolean {
 		if (a !== this.currentArea) {
 			if (this.currentArea !== undefined) {
-				this.currentArea.exitArea();
+				this.currentArea.OnExit();
 			}
 			this.currentArea = a;
 		}
-		return this.currentArea.enterArea()
+		this.currentArea.OnEnter();
+		return true;
 	}
-	currentArea(): Area {
+	getCurrentArea(): Area {
 		return this.currentArea;
 	}
 	exitArea(): void {
-		this.currentArea.exitArea();
+		this.currentArea.OnExit();
 	}
 	
 	// ----------------------------------

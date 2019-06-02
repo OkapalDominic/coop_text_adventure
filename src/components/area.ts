@@ -1,3 +1,4 @@
+import {Entity} from './entity';
 import {Dungeon} from './dungeon';
 import {Item, ItemList} from './item';
 
@@ -23,19 +24,20 @@ export class Area extends Entity {
 		
 		// set owner
 		this.owner = dungeon;
+		this.owner.addArea(this);
 		
 		this.items = new ItemList();
 		
 		this.connectedAreas = [];
 		
 		// set some default behaviors
-		this.bonEnter(function() {
+		this.bonEnter = function() {
 			console.log(`You have entered "${this.name}".`);
 			console.log(this.description);
-		});
-		this.bonExit(function() {
+		};
+		this.bonExit = function() {
 			console.log(`You have Left "${this.name}".`);
-		});
+		};
 	}
 	
 	// ----------------------------------
@@ -87,7 +89,7 @@ export class Area extends Entity {
 		return false;
 	}
 	hasConnectedArea(s: string): boolean {
-		a = this.connectedAreas.findIndex((i) => {
+		let a = this.connectedAreas.findIndex((i) => {
 			return i === s;
 		});
 		if (a > -1) {
@@ -99,7 +101,7 @@ export class Area extends Entity {
 		return this.connectedAreas;
 	}
 	removeConnectedArea(s: string): void {
-		a = this.connectedAreas.findIndex((i) => {
+		let a = this.connectedAreas.findIndex((i) => {
 			return i === s;
 		});
 		if (a > -1) {
@@ -137,7 +139,7 @@ export class AreaList {
 		return false;
 	}
 	
-	getArea(s: string): Player {
+	getArea(s: string): Area {
 		let a = Entity.indexEntity(s, this.areas);
 		if (a > -1) {
 			return this.areas[a];
