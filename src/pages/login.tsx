@@ -80,7 +80,7 @@ class LoginPage extends React.Component<Props, State> {
         return (
             <div className={styles.container}>
                 <form className={styles.form} onSubmit={this.handleBegin}>
-                    <h1 className={styles.title}>Choose Thy Adventerous Name Now</h1>
+                    <h1 className={styles.title}>Choose Thy Adventerous Name</h1>
                     <br />
                     <div className={styles['thy-name-border']}>
                         <input
@@ -97,7 +97,7 @@ class LoginPage extends React.Component<Props, State> {
                         className={styles['begin-adventure']}
                         type="submit"
                         onClick={this.handleBegin}
-                    >Begin Ye Adventure...</button>
+                    >Begin</button>
                 </form>
             </div>
         );
