@@ -29,6 +29,7 @@ export class Dungeon extends Entity {
 	// add/remove players in dungeon
 	//------------------------------------------------------------
 	addPlayer(p: Player): boolean {
+		console.log(`player "${p.getName()}" attempting to enter dungeon "${this.name}"`);
 		return this.players.addPlayer(p);
 	}	
 	hasPlayer(s: string): boolean {
@@ -42,12 +43,18 @@ export class Dungeon extends Entity {
 	// add/remove area in dungeon
 	//------------------------------------------------------------
 	addArea(a: Area): boolean {
+		if (this.startArea === undefined) {
+			this.startArea = a;
+		}
 		return this.areas.addArea(a);
 	}
 	hasArea(s: string): boolean {
 		return this.areas.hasArea(s);
 	}
 	removeArea(s: string): void {
+		if (this.startArea === this.areas.getArea(s)) {
+			console.log('You are removing starting area from dungeon... oops!');
+		}
 		return this.areas.removeArea(s);
 	}
 	

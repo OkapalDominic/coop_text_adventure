@@ -12,7 +12,7 @@ import {Item, ItemList} from './item';
 // tests to run
 // ----------------------------------
 console.log('Start of tests.');
-// tests go here
+testDungeon();
 console.log('End of tests.');
 
 
@@ -22,7 +22,22 @@ console.log('End of tests.');
 // ----------------------------------
 function testDungeon(): void {
 	console.log('--------Testing Dungeon--------');
+	
+	// create dungeon
 	let d = DungeonFactory.testDungeon();
 	console.log(d);
+	
+	// create dummy player
+	let p = new Player('session', 'player username');
+	p.enterDungeon(d);
+	console.log(p);
+	
+	// test parseCommand
+	d.parseCommand('Baloney Beef Pork Veal', p);
+	d.parseCommand('enter Baloney Beef Pork Veal', p);
+	d.parseCommand('enter StartRoom', p);
+	d.parseCommand('enter EmptyRoom', p);
+	d.parseCommand('enter ItemRoom', p);
+
 	console.log('--------Done Dungeon--------');
 }
