@@ -1,8 +1,11 @@
 import {Entity} from './entity';
 import {Player, PlayerList} from './player';
 import {Area, AreaList} from './area';
+import {Item} from './item';
 
-// manages the current Dungeon
+// ----------------------------------
+// holds information on a dungeon
+// ----------------------------------
 export class Dungeon extends Entity {
 	// variables unique to Dungeon
 	private areas: AreaList;
@@ -80,5 +83,36 @@ export class Dungeon extends Entity {
 			return;
 		}
 		console.log(`"Unable to find room "${arg}" to enter...`);
+	}
+}
+
+// ----------------------------------
+// class with static methods to create dungeons
+// ----------------------------------
+export class DungeonFactory {
+	static testDungeon(name?: string): Dungeon {
+		let n = 'TestDungeon';
+		if (name) {
+			n = name;
+		}
+		
+		let d = new Dungeon(n, 'A dungeon used for testing. Watch out for spontaneous nonexistance.');
+		
+		let a0 = new Area('StartRoom', 'A very good place to start.', d);
+		let a1 = new Area('EmptyRoom', 'Nothing in this room.', d);
+		let a2 = new Area('ItemRoom', 'Contains an item.', d);
+		
+		let i = new Item('Apple', 'It may be able to heal you! Probably not though.', a2);
+		
+		DungeonFactory.symmetricConnection(a0,a1);
+		DungeonFactory.symmetricConnection(a1,a2);
+	}
+	
+	private static oneWayConnection(a1: Area, a2: Area): void {
+		a1.addConnectedArea(a2);
+	}
+	private static symmetricConnection(a1: Area, a2: Area): void {
+		a1.addConnectedArea(a2);
+		a2.addConnectedArea(a1);
 	}
 }

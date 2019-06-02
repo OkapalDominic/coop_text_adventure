@@ -1,7 +1,6 @@
-// type cbAnyArray_Any = (...args: any[]) => any;
-type CallBack = () => void;
-
-// base class to inherit and alter behaviors of
+// ----------------------------------
+// A handy base class to hold name and description
+// ----------------------------------
 export class Entity {
 	// name/description of Entity
 	protected name: string;
