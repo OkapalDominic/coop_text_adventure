@@ -3,31 +3,37 @@ import * as express from 'express';
 import * as socketIo from 'socket.io';
 
 // our imports/files
-import {Dungeon} from './components/dungeon';
+import {Player, PlayerList} from './components/player';
+import {Dungeon, DungeonFactory} from './components/dungeon';
 
 export class AdventureServer {
-	private port: string | number;
+    private app: express.Application;
 	private server: Server;
     private io: SocketIO.Server;
+	private port: string | number;
 	
-	private dungeons: ???;
-	//private players: ???;
+	private dungeons: Dungeon;
+	private players: PlayerList
 	
     constructor() {
-		// choose port
-		this.port = process.env.PORT || AdventureServer.PORT;
 		// create server
-		this.server = createServer(express());
+		this.app = express();
+		this.server = createServer(this.app);
 		// set up socketIo
 		this.io = socketIo(this.server);
+		// choose port
+		this.port = process.env.PORT || 7777;
 		
 		// set up local data
-		this.dungeons = ???;
-		// create a dungeon
-		//this.players = ???;
+		this.dungeons = DungeonFactory.testDungeon();
+		this.players = new PlayerList();
 		
 		// listen for messages
 		this.listen();
+    }
+	
+	public getApp(): express.Application {
+        return this.app;
     }
 
     private listen(): void {
@@ -39,35 +45,39 @@ export class AdventureServer {
 		// handle connections to server
 		this.io.on('connect', (socket: socketIo.Socket) => {
 			let player = undefined;
+			console.log('web client connected ' + socket.id);
+			socket.emit('connected', socket.id);
 			
 			// -------------------------------------------
 			// add player to server
 			// -------------------------------------------
-			socket.on('login', (req: ???) => {
-				// create player (req.user, socket.id, socket)
-				// add player
-				// emit connection message
+			socket.on('login', () => {
+				console.log('server socket login');
 			});
 			
 			// -------------------------------------------
 			// add player to dungeon
 			// -------------------------------------------
-			socket.on('enterDungeon', (req:) => {
-				
+			socket.on('enterDungeon', () => {
+				console.log('server socket enterDungeon');
 			});
 			
 			// -------------------------------------------
 			// send command to dungeon player is in
 			// -------------------------------------------
-			socket.on('sendCommand', (req:) => {
-				
+			socket.on('sendCommand', () => {
+				console.log('server socket sendCommand');
 			});
 			
 			// -------------------------------------------
 			// disconnect player
+			// ignore disconnects???
 			// -------------------------------------------
 			socket.on('disconnect', () => {
-				
+				console.log('server socket disconnect');
+				if (player) {
+					console.log('player disconnected');
+				}
 			});
 		});
 	}
