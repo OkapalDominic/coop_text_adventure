@@ -4,7 +4,7 @@ import * as socketIo from 'socket.io';
 
 // our imports/files
 import {Player, PlayerList} from './components/player';
-import {Dungeon, DungeonFactory} from './components/dungeon';
+import {Dungeon, DungeonList, DungeonFactory} from './components/dungeon';
 
 interface DumpProp {
 	s: string;
@@ -17,7 +17,7 @@ export class AdventureServer {
     private io: SocketIO.Server;
 	private port: string | number;
 	
-	private dungeons: Dungeon;
+	private dungeons: DungeonList;
 	private players: PlayerList
 	
     constructor() {
@@ -30,7 +30,10 @@ export class AdventureServer {
 		this.port = process.env.PORT || 7777;
 		
 		// set up local data
-		this.dungeons = DungeonFactory.testDungeon();
+		this.dungeons = new DungeonList();
+		this.dungeons.addDungeon(DungeonFactory.testDungeon());
+		this.dungeons.addDungeon(DungeonFactory.testDungeon('Derpgeon'));
+		this.dungeons.addDungeon(DungeonFactory.testDungeon('AnotherDungeon'));
 		this.players = new PlayerList();
 		
 		// listen for messages

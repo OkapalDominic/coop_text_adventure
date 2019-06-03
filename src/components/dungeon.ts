@@ -96,6 +96,60 @@ export class Dungeon extends Entity {
 }
 
 // ----------------------------------
+// holds an array of Dungeon
+// ----------------------------------
+export class DungeonList {
+	private dungeons: Dungeon[];
+	
+	constructor() {
+		this.dungeons = [];
+	}
+	
+	// ----------------------------------
+	// modify PlayerList
+	// ----------------------------------
+	addDungeon(d: Dungeon): boolean {
+		if (this.hasDungeon(d.getName()) === false) {
+			this.dungeons.push(d);
+			return true;
+		}
+		console.log(`This collection already has dungeon with name "${d.getName()}"`);
+		return false;
+	}
+	
+	hasDungeon(s: string): boolean {
+		if (Entity.indexEntity(s, this.dungeons) > -1) {
+			return true;
+		}
+		return false;
+	}
+	
+	getDungeon(s: string): Dungeon {
+		let d = Entity.indexEntity(s, this.dungeons);
+		if (d > -1) {
+			return this.dungeons[d];
+		}
+		console.log(`"Unable to find Dungeon named "${s}" in this collection... Did you try the right collection?`);
+		return undefined;
+	}
+	
+	getDungeonNames(): string[] {
+		let names: string[] = [];
+		this.dungeons.forEach((d) => {
+			names.push(d.getName());
+		});
+		return names;
+	}
+	
+	removeDungeon(s: string): void {
+		let d = Entity.indexEntity(s, this.dungeons);
+		if (d > -1) {
+			this.dungeons.splice(d, 1);
+		}
+	}
+}
+
+// ----------------------------------
 // class with static methods to create dungeons
 // ----------------------------------
 export class DungeonFactory {
