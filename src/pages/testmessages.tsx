@@ -6,31 +6,31 @@ import styles from './testmessages.module.css'
 
 type Props = RouteComponentProps;
 
+// -------------------------------------------
+// message interface for communication with server
+// -------------------------------------------
 interface DumpProp {
 	s: string;
 	d: string;
 }
 
+// -------------------------------------------
+// state used by testmessages.tsx
+// -------------------------------------------
 interface State {
 	res: DumpProp;
+	d: string[]; // dungeons on server
+	p: string[]; // players in dungeon
+	h: string[]; // hints from server
+	i: string[]; // player inventory
+	a: string[]; // area information (connected areas and items) 
 	id: string; // id on server
 	u: string; // username
-	d: string[]; // dungeons on server
 	dun: string; // dungeon currently in
 	cmd: string; // cmd to send to server
 	loginValid: boolean;
 	lobbyValid: boolean;
 	gameValid: boolean;
-}
-
-function ServerStatus(prop: DumpProp) {
-	return (
-		<div className={styles['back']} >
-			ServerStatus (ie last message) <br />
-			{ prop.s } <br />
-			{ prop.d }
-		</div>
-	);
 }
 
 export class TestPage extends React.Component<Props, State> {
@@ -45,9 +45,13 @@ export class TestPage extends React.Component<Props, State> {
 				s: 'No Status',
 				d: 'No Connection',
 			},
+			d: [],
+			p: [],
+			h: [],
+			i: [],
+			a: [],
 			id: '???',
 			u: '???',
-			d: [],
 			dun: '???',
 			cmd: '',
 			loginValid: false,
@@ -91,16 +95,47 @@ export class TestPage extends React.Component<Props, State> {
 		});
 		
 		// -------------------------------------------
-		// handle dungeons message
-		// get list of all the dungeons on the server
+		// handle infoDungeon message
+		// get list of all the (dungeons|players|items|areas) on the server
 		// occurs when client logins in the server
+		// occurs when dungeon game state is changed
 		// -------------------------------------------
-		this.socket.on('dungeons', (res: DumpProp) => {
-			console.log('dungeons')
-			this.setState({ 
-				res: {s: res.s, d: res.d },
-				d: res.d.split(' '),
-			});
+		this.socket.on('infoDungeon', (res: DumpProp) => {
+			console.log('infoDungeon: ', res.s);
+			switch (res.s) {
+				case 'dungeons':
+					this.setState({ 
+						res: {s: 'dungeons - ' + res.s, d: res.d },
+						d: res.d.split(' '),
+					});
+					break;
+				case 'players':
+					this.setState({ 
+						res: {s: 'dungeons - ' + res.s, d: res.d },
+						p: res.d.split(' '),
+					});
+					break;
+				case 'hints':
+					this.setState({ 
+						res: {s: 'dungeons - ' + res.s, d: res.d },
+						h: res.d.split(' '),
+					});
+					break;
+				case 'items':
+					this.setState({ 
+						res: {s: 'dungeons - ' + res.s, d: res.d },
+						i: res.d.split(' '),
+					});
+					break;
+				case 'areas':
+					this.setState({ 
+						res: {s: 'dungeons - ' + res.s, d: res.d },
+						a: res.d.split(' '),
+					});
+					break;
+				default:
+					console.log(`unknown infoDungeon data "${res.s}"`);
+			}
 		});
 		
 		// -------------------------------------------
@@ -220,6 +255,14 @@ export class TestPage extends React.Component<Props, State> {
 							});
 						} }
 					>Begin</button>
+					<p>Players</p>
+					{ this.state.p.join(' ') } <br />
+					<p>Hints</p>
+					{ this.state.h.join(' ') } <br />
+					<p>Items</p>
+					{ this.state.i.join(' ') } <br />
+					<p>Area</p>
+					{ this.state.a.join(' ') } <br />
 				</div>
 			);
 		}
@@ -229,7 +272,11 @@ export class TestPage extends React.Component<Props, State> {
 		// -------------------------------------------
 		return (
 			<div>
-				<ServerStatus s={this.state.res.s} d={this.state.res.d} />
+				<div className={styles['back']} >
+					ServerStatus (ie last message) <br />
+					{ this.state.res.s } <br />
+					{ this.state.res.d }
+				</div>
 				{ login }
 				{ lobby }
 				{ game }
