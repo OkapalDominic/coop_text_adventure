@@ -1,3 +1,5 @@
+import {Socket} from 'socket.io';
+
 import {Entity} from './entity';
 import {Dungeon} from './dungeon';
 import {Area} from './area';
@@ -11,6 +13,7 @@ import {Item, ItemList} from './item';
 // ----------------------------------
 export class Player extends Entity {
 	// variables unique to Player
+	private socket: Socket;
 	private dungeon: Dungeon;
 	private currentArea: Area;
 	private items: ItemList;
@@ -18,14 +21,23 @@ export class Player extends Entity {
 	// ----------------------------------
 	// constructor
 	// ----------------------------------
-	constructor(n: string, d: string) {
+	constructor(n: string, d: string, s: Socket) {
 		super(n, d);
+		
+		this.socket = s;
 		
 		this.dungeon = undefined;
 		
 		this.currentArea = undefined;
 		
 		this.items = new ItemList();
+	}
+	
+	// ----------------------------------
+	// get player socket
+	// ----------------------------------
+	getSocket(): Socket {
+		return this.socket;
 	}
 	
 	// ----------------------------------
@@ -37,6 +49,7 @@ export class Player extends Entity {
 				this.dungeon.removePlayer(this.name);
 			}
 			this.dungeon = d;
+			this.enterArea(d.getStartArea());
 		}
 		return this.dungeon.addPlayer(this);
 	}

@@ -6,7 +6,7 @@ import * as socketIo from 'socket.io';
 import {Player, PlayerList} from './components/player';
 import {Dungeon, DungeonList, DungeonFactory} from './components/dungeon';
 
-interface DumpProp {
+export interface DumpProp {
 	s: string;
 	d: string;
 }
@@ -44,14 +44,14 @@ export class AdventureServer {
         return this.app;
     }
 	
-	private emit(socket: socketIo.Socket, type: string, res: DumpProp): void {
+	private emit(p: Player, type: string, res: DumpProp): void {
 		/*
 		console.log(`socket.id: ${socket.id}`);
 		console.log(`emit type: ${type}`);
 		console.log(`str res.s: ${res.s}`);
 		console.log(`str res.d: ${res.d}`);
 		*/
-		socket.emit(type, res);
+		p.getSocket().emit(type, res);
 	}
 
     private listen(): void {
@@ -62,9 +62,8 @@ export class AdventureServer {
 		
 		// handle connections to server
 		this.io.on('connect', (socket: socketIo.Socket) => {
-			//let player = undefined;
 			console.log('server socket connect');
-			this.emit(socket, 'connected', {
+			socket.emit('connected', {
 				s: 'web client connected',
 				d: socket.id,
 			});
@@ -77,18 +76,18 @@ export class AdventureServer {
 				/*console.log(req.s);
 				console.log(req.d);
 				*/
-				let p = new Player(req.s, req.d);
+				let p = new Player(req.s, req.d, socket);
 				if (this.players.addPlayer(p) === true) {
-					this.emit(socket, 'login', {
+					this.emit(p, 'login', {
 						s: 'success',
 						d: 'Thou Hast Chosen Goodly!',
 					});
-					this.emit(socket, 'dungeons', {
-						s: 'list of dungeons',
+					this.emit(p, 'infoDungeon', {
+						s: 'dungeons',
 						d: this.dungeons.getDungeonNames().join(' '),
 					});
 				} else {
-					this.emit(socket, 'login', {
+					this.emit(p, 'login', {
 						s: 'error',
 						d: 'Thou Hast Chosen Poorly! Try a new name.',
 					});
@@ -107,20 +106,20 @@ export class AdventureServer {
 				if (p !== undefined && d !== undefined) {
 					if (p.enterDungeon(d) === true) {
 						console.log(`${req.s} added to ${req.d}`);
-						this.emit(socket, 'joinDungeon', {
+						this.emit(p, 'joinDungeon', {
 							s: 'success',
 							d: d.getName(),
 						});
 					} else {
 						console.log('Unable to add player to dungeon... oops.');
-						this.emit(socket, 'joinDungeon', {
+						this.emit(p, 'joinDungeon', {
 							s: 'error',
 							d: 'Unable to add player to dungeon... oops.',
 						});
 					}
 				} else {
 					console.log('Unable to find player and/or dungeon.');
-					this.emit(socket, 'joinDungeon', {
+					this.emit(p, 'joinDungeon', {
 						s: 'error',
 						d: 'Either you or the dungeon does not exits.',
 					});
@@ -132,28 +131,26 @@ export class AdventureServer {
 			// -------------------------------------------
 			socket.on('sendCommand', (req: DumpProp) => {
 				console.log('server socket sendCommand');
-				console.log(req.s);
-				console.log(req.d);
 				let p = this.players.getPlayer(req.s);
 				if (p !== undefined) {
 					let d = p.currentDungeon();
 					if (d !== undefined) {
 						console.log(`"${req.d}" sent to "${d.getName()}" by "${p.getDescription()}"`);
 						d.parseCommand(req.d, p);
-						this.emit(socket, 'sendCommand', {
+						/*this.emit(socket, 'sendCommand', {
 							s: 'success',
 							d: req.d,
-						});
+						});*/
 					} else {
 						console.log('player is not in dungeon');
-						this.emit(socket, 'sendCommand', {
+						this.emit(p, 'sendCommand', {
 							s: 'error',
 							d: 'Player not in dungeon',
 						});
 					}
 				} else {
 					console.log('Unable to find player');
-					this.emit(socket, 'sendCommand', {
+					this.emit(p, 'sendCommand', {
 						s: 'error',
 						d: 'Unknown player',
 					});

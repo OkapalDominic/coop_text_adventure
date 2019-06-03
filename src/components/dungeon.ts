@@ -30,7 +30,27 @@ export class Dungeon extends Entity {
 	//------------------------------------------------------------
 	addPlayer(p: Player): boolean {
 		console.log(`player "${p.getName()}" attempting to enter dungeon "${this.name}"`);
-		return this.players.addPlayer(p);
+		let b = this.players.addPlayer(p);
+		if (b === true) {
+			// send state for client
+			p.getSocket().emit('infoDungeon', {
+				s: 'players',
+				d: this.players.getPlayerNames().join(' '),
+			});
+			p.getSocket().emit('infoDungeon', {
+				s: 'hints',
+				d: 'I need a way to do hints',
+			});
+			p.getSocket().emit('infoDungeon', {
+				s: 'items',
+				d: p.getItemNames().join(' '),
+			});
+			p.getSocket().emit('infoDungeon', {
+				s: 'areas',
+				d: p.getCurrentArea().getConnectedAreaNames().concat(p.getCurrentArea().getItemNames()).join(' '),
+			});
+		}
+		return b;
 	}	
 	hasPlayer(s: string): boolean {
 		return this.players.hasPlayer(s);
@@ -50,6 +70,9 @@ export class Dungeon extends Entity {
 	}
 	hasArea(s: string): boolean {
 		return this.areas.hasArea(s);
+	}
+	getStartArea(): Area {
+		return this.startArea;
 	}
 	removeArea(s: string): void {
 		if (this.startArea === this.areas.getArea(s)) {
@@ -83,19 +106,36 @@ export class Dungeon extends Entity {
 				break
 			default:
 				console.log(`error unknown command "${cmd[0]}"`);
+				p.getSocket().emit('sendCommand', {
+					s: 'error',
+					d: `error unknown command "${cmd[0]}"`,
+				});
 		}
 	}
 	
 	commandEnter(arg: string, p: Player): void {
-		if (this.hasArea(arg) === true) {
+		if (this.hasArea(arg)) {
 			const a = this.areas.getArea(arg);
-			console.log('enter area ', arg)
-			/*
-			need logic to set the player to area
-			*/
-			return;
+			console.log(`enter area "${arg}"`);
+			// logic goes here
+			p.enterArea(a);
+			// tell client about success
+			p.getSocket().emit('sendCommand', {
+				s: 'success',
+				d: `entered area "${arg}"`,
+			});
+			// update client areas
+			p.getSocket().emit('infoDungeon', {
+				s: 'areas',
+				d: p.getCurrentArea().getConnectedAreaNames().concat(p.getCurrentArea().getItemNames()).join(' '),
+			});
+		} else {
+			console.log(`Unable to find room "${arg}" to enter...`);
+			p.getSocket().emit('sendCommand', {
+				s: 'error',
+				d: `Unable to find room "${arg}" to enter...`,
+			});
 		}
-		console.log(`"Unable to find room "${arg}" to enter...`);
 	}
 }
 
