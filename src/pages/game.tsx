@@ -3,7 +3,7 @@ import { RouteComponentProps } from 'react-router-dom';
 
 import styles from './game.module.css';
 
-type Props = RouteComponentProps;
+type Props = {};
 interface State {
 	areaText: string;
 	cmdText: string;

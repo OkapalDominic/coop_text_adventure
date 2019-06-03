@@ -6,6 +6,7 @@ html, body {
     background-image: url(../images/tavern-480-270.jpg);
     background-repeat: no-repeat;
     background-position: center;
+    background-size: cover;
     background-color: #0e0904;
     position: absolute;
     width: 100%;
@@ -26,14 +27,23 @@ html, body {
     font-size: 1.5em;
 }
 
-.intro {
+.dialog {
     background-color: rgba(171, 173, 151, 55%);
     border-radius: 30px;
     display: inline-block;
     margin-top: 1%;
     padding: 10px 10px;
     height: 60%;
-    width: 80%;
+    width: 40%;
+}
+.dungeons {
+    background-color: rgba(171, 173, 151, 55%);
+    border-radius: 30px;
+    display: inline-block;
+    margin-top: 1%;
+    padding: 10px 10px;
+    height: 60%;
+    width: 40%;
 }
 .scrollArea {
     overflow-y: auto;
