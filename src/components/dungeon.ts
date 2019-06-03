@@ -62,6 +62,10 @@ export class Dungeon extends Entity {
 	// user command logic
 	//------------------------------------------------------------
 	parseCommand(command: string, p: Player): void {
+		if (this.players.hasPlayer(p.getName()) === false) {
+			console.log('recived cmd from player not in dungeon');
+			return;
+		}
 		// split on spaces and only 4 arguments [cmd object target JunkThatIsIgrnored]
 		let cmd = command.split(' ', 3);
 		switch (cmd[0]) {

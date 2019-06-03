@@ -65,8 +65,8 @@ export class AdventureServer {
 			//let player = undefined;
 			console.log('server socket connect');
 			this.emit(socket, 'connected', {
-				s: socket.id,
-				d: 'web client connected',
+				s: 'web client connected',
+				d: socket.id,
 			});
 			
 			// -------------------------------------------
@@ -83,6 +83,10 @@ export class AdventureServer {
 						s: 'success',
 						d: 'Thou Hast Chosen Goodly!',
 					});
+					this.emit(socket, 'dungeons', {
+						s: 'list of dungeons',
+						d: this.dungeons.getDungeonNames().join(' '),
+					});
 				} else {
 					this.emit(socket, 'login', {
 						s: 'error',
@@ -94,15 +98,66 @@ export class AdventureServer {
 			// -------------------------------------------
 			// add player to dungeon
 			// -------------------------------------------
-			socket.on('enterDungeon', () => {
-				console.log('server socket enterDungeon');
+			socket.on('joinDungeon', (req: DumpProp) => {
+				console.log('server socket joinDungeon');
+				//console.log(req.s);
+				//console.log(req.d);
+				let p = this.players.getPlayer(req.s);
+				let d = this.dungeons.getDungeon(req.d);
+				if (p !== undefined && d !== undefined) {
+					if (p.enterDungeon(d) === true) {
+						console.log(`${req.s} added to ${req.d}`);
+						this.emit(socket, 'joinDungeon', {
+							s: 'success',
+							d: d.getName(),
+						});
+					} else {
+						console.log('Unable to add player to dungeon... oops.');
+						this.emit(socket, 'joinDungeon', {
+							s: 'error',
+							d: 'Unable to add player to dungeon... oops.',
+						});
+					}
+				} else {
+					console.log('Unable to find player and/or dungeon.');
+					this.emit(socket, 'joinDungeon', {
+						s: 'error',
+						d: 'Either you or the dungeon does not exits.',
+					});
+				}
 			});
 			
 			// -------------------------------------------
 			// send command to dungeon player is in
 			// -------------------------------------------
-			socket.on('sendCommand', () => {
+			socket.on('sendCommand', (req: DumpProp) => {
 				console.log('server socket sendCommand');
+				console.log(req.s);
+				console.log(req.d);
+				let p = this.players.getPlayer(req.s);
+				if (p !== undefined) {
+					let d = p.currentDungeon();
+					if (d !== undefined) {
+						console.log(`"${req.d}" sent to "${d.getName()}" by "${p.getDescription()}"`);
+						d.parseCommand(req.d, p);
+						this.emit(socket, 'sendCommand', {
+							s: 'success',
+							d: req.d,
+						});
+					} else {
+						console.log('player is not in dungeon');
+						this.emit(socket, 'sendCommand', {
+							s: 'error',
+							d: 'Player not in dungeon',
+						});
+					}
+				} else {
+					console.log('Unable to find player');
+					this.emit(socket, 'sendCommand', {
+						s: 'error',
+						d: 'Unknown player',
+					});
+				}
 			});
 			
 			// -------------------------------------------
