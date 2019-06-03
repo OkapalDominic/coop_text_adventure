@@ -6,6 +6,11 @@ import * as socketIo from 'socket.io';
 import {Player, PlayerList} from './components/player';
 import {Dungeon, DungeonFactory} from './components/dungeon';
 
+interface DumpProp {
+	s: string;
+	d: string;
+}
+
 export class AdventureServer {
     private app: express.Application;
 	private server: Server;
@@ -35,6 +40,16 @@ export class AdventureServer {
 	public getApp(): express.Application {
         return this.app;
     }
+	
+	private emit(socket: socketIo.Socket, type: string, res: DumpProp): void {
+		/*
+		console.log(`socket.id: ${socket.id}`);
+		console.log(`emit type: ${type}`);
+		console.log(`str res.s: ${res.s}`);
+		console.log(`str res.d: ${res.d}`);
+		*/
+		socket.emit(type, res);
+	}
 
     private listen(): void {
 		// listen on port
@@ -44,15 +59,33 @@ export class AdventureServer {
 		
 		// handle connections to server
 		this.io.on('connect', (socket: socketIo.Socket) => {
-			let player = undefined;
-			console.log('web client connected ' + socket.id);
-			socket.emit('connected', socket.id);
+			//let player = undefined;
+			console.log('server socket connect');
+			this.emit(socket, 'connected', {
+				s: socket.id,
+				d: 'web client connected',
+			});
 			
 			// -------------------------------------------
 			// add player to server
 			// -------------------------------------------
-			socket.on('login', () => {
+			socket.on('login', (req: DumpProp) => {
 				console.log('server socket login');
+				/*console.log(req.s);
+				console.log(req.d);
+				*/
+				let p = new Player(req.s, req.d);
+				if (this.players.addPlayer(p) === true) {
+					this.emit(socket, 'login', {
+						s: 'success',
+						d: 'Thou Hast Chosen Goodly!',
+					});
+				} else {
+					this.emit(socket, 'login', {
+						s: 'error',
+						d: 'Thou Hast Chosen Poorly! Try a new name.',
+					});
+				}
 			});
 			
 			// -------------------------------------------
@@ -75,9 +108,9 @@ export class AdventureServer {
 			// -------------------------------------------
 			socket.on('disconnect', () => {
 				console.log('server socket disconnect');
-				if (player) {
+				/*if (player) {
 					console.log('player disconnected');
-				}
+				}*/
 			});
 		});
 	}
