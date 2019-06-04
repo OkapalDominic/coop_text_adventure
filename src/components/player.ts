@@ -5,6 +5,11 @@ import {Dungeon} from './dungeon';
 import {Area} from './area';
 import {Item, ItemList} from './item';
 
+interface DumpProp {
+	s: string;
+	d: string;
+}
+
 // ----------------------------------
 // manages details about Player
 // note:
@@ -38,6 +43,10 @@ export class Player extends Entity {
 	// ----------------------------------
 	getSocket(): Socket {
 		return this.socket;
+	}
+	
+	sendMessage(s: string, dp: DumpProp): void {
+		this.getSocket().emit(s, dp);
 	}
 	
 	// ----------------------------------
@@ -109,6 +118,10 @@ export class PlayerList {
 		this.players = [];
 	}
 	
+	getRawArray(): Player[] {
+		return this.players;
+	}
+	
 	// ----------------------------------
 	// modify PlayerList
 	// ----------------------------------
@@ -143,6 +156,14 @@ export class PlayerList {
 			names.push(p.getName());
 		});
 		return names;
+	}
+	
+	getPlayerDescriptions(): string[] {
+		let des: string[] = [];
+		this.players.forEach((p) => {
+			des.push(p.getDescription());
+		});
+		return des;
 	}
 	
 	removePlayer(s: string): void {

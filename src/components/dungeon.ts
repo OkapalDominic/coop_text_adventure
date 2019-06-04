@@ -3,6 +3,11 @@ import {Player, PlayerList} from './player';
 import {Area, AreaList} from './area';
 import {Item} from './item';
 
+interface DumpProp {
+	s: string;
+	d: string;
+}
+
 // ----------------------------------
 // holds information on a dungeon
 // ----------------------------------
@@ -33,26 +38,15 @@ export class Dungeon extends Entity {
 		let b = this.players.addPlayer(p);
 		if (b === true) {
 			// send state for client
-			p.getSocket().emit('infoDungeon', {
-				s: 'players',
-				d: this.players.getPlayerNames().join(' '),
+			this.sendMessageAll('sendCommand', {
+				s: p.getDescription(),
+				d: `has joined ${this.getName()}`,
 			});
-			p.getSocket().emit('infoDungeon', {
-				s: 'hints',
-				d: 'I need a way to do hints',
-			});
-			p.getSocket().emit('infoDungeon', {
-				s: 'inventory',
-				d: p.getItemNames().join(' '),
-			});
-			p.getSocket().emit('infoDungeon', {
-				s: 'areas',
-				d: p.getCurrentArea().getConnectedAreaNames().join(' '),
-			});
-			p.getSocket().emit('infoDungeon', {
-				s: 'items',
-				d: p.getCurrentArea().getItemNames().join(' '),
-			});
+			this.sendPlayers();
+			this.sendHints(p);
+			this.sendInventory(p);
+			this.sendAreas(p);
+			this.sendItems(p);
 		}
 		return b;
 	}	
@@ -83,6 +77,76 @@ export class Dungeon extends Entity {
 			console.log('You are removing starting area from dungeon... oops!');
 		}
 		return this.areas.removeArea(s);
+	}	
+	
+	//------------------------------------------------------------
+	// methods to emit messages to players in dungeon
+	//------------------------------------------------------------
+	sendMessage(p: Player, s: string, dp: DumpProp): void {
+		p.sendMessage(s, dp);
+	}
+	
+	sendMessageRoom(p: Player, s: string, dp: DumpProp): void {
+		this.players.getRawArray().forEach((i) => {
+			if (p.getCurrentArea().getName() === i.getCurrentArea().getName()) {
+				i.sendMessage(s, dp);
+			}
+		});
+	}
+	
+	sendMessageAll(s: string, dp: DumpProp): void {
+		this.players.getRawArray().forEach((p) => {
+			p.sendMessage(s, dp);
+		});
+	}
+	
+	//------------------------------------------------------------
+	// methods to send dungeon info to players in dungeon
+	//------------------------------------------------------------
+	sendPlayers(): void {
+		//console.log('sendPlayers');
+		this.players.getRawArray().forEach((p) => {
+			//console.log(`\t${p.getDescription()}-${p.getCurrentArea().getName()}`)
+			let str: string[] = [];
+			this.players.getRawArray().forEach((pp) => {
+				//console.log(`\t${pp.getDescription()}-${pp.getCurrentArea().getName()}`)
+				if (p.getCurrentArea().getName() === pp.getCurrentArea().getName()) {
+					//console.log('\t\tpush')
+					str.push(pp.getDescription());
+				}
+			});
+			//console.log('\t\t', str);
+			if (str.length > 0) {
+				this.sendMessage(p, 'infoDungeon', {
+					s: 'players',
+					d: str.join(' '),
+				});
+			}
+		});
+	}
+	sendHints(p: Player): void {
+		this.sendMessage(p, 'infoDungeon', {
+			s: 'hints',
+			d: 'I need a way to do hints',
+		});
+	}
+	sendInventory(p: Player): void {
+		this.sendMessage(p, 'infoDungeon', {
+			s: 'inventory',
+			d: p.getItemNames().join(' '),
+		});
+	}
+	sendAreas(p: Player): void {
+		this.sendMessageRoom(p, 'infoDungeon', {
+			s: 'areas',
+			d: p.getCurrentArea().getConnectedAreaNames().join(' '),
+		});
+	}
+	sendItems(p: Player): void {
+		this.sendMessageRoom(p, 'infoDungeon', {
+			s: 'items',
+			d: p.getCurrentArea().getItemNames().join(' '),
+		});
 	}
 	
 	//------------------------------------------------------------
@@ -110,7 +174,7 @@ export class Dungeon extends Entity {
 				break
 			default:
 				console.log(`error unknown command "${cmd[0]}"`);
-				p.getSocket().emit('sendCommand', {
+				this.sendMessage(p, 'sendCommand', {
 					s: p.getDescription(),
 					d: `error unknown command "${cmd[0]}"`,
 				});
@@ -124,18 +188,17 @@ export class Dungeon extends Entity {
 			// logic goes here
 			p.enterArea(a);
 			// tell client about success
-			p.getSocket().emit('sendCommand', {
+			this.sendMessageRoom(p, 'sendCommand', {
 				s: p.getDescription(),
 				d: `entered area "${arg}"`,
 			});
 			// update client areas
-			p.getSocket().emit('infoDungeon', {
-				s: 'areas',
-				d: p.getCurrentArea().getConnectedAreaNames().concat(p.getCurrentArea().getItemNames()).join(' '),
-			});
+			this.sendPlayers();
+			this.sendAreas(p);
+			this.sendItems(p);
 		} else {
 			console.log(`Unable to find room "${arg}" to enter...`);
-			p.getSocket().emit('sendCommand', {
+			this.sendMessage(p, 'sendCommand', {
 				s: p.getDescription(),
 				d: `Unable to find room "${arg}" to enter...`,
 			});
