@@ -42,12 +42,16 @@ export class Dungeon extends Entity {
 				d: 'I need a way to do hints',
 			});
 			p.getSocket().emit('infoDungeon', {
-				s: 'items',
+				s: 'inventory',
 				d: p.getItemNames().join(' '),
 			});
 			p.getSocket().emit('infoDungeon', {
 				s: 'areas',
-				d: p.getCurrentArea().getConnectedAreaNames().concat(p.getCurrentArea().getItemNames()).join(' '),
+				d: p.getCurrentArea().getConnectedAreaNames().join(' '),
+			});
+			p.getSocket().emit('infoDungeon', {
+				s: 'items',
+				d: p.getCurrentArea().getItemNames().join(' '),
 			});
 		}
 		return b;
