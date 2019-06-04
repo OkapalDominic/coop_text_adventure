@@ -87,6 +87,7 @@ class LobbyPage extends React.Component<Props, State> {
                                     key={dungeon}
                                     type='button'
                                     onClick={(event) => {
+                                        console.log(`${this.props.id}\n${dungeon}`);
                                         this.props.socket.emit('joinDungeon', {
                                             s: this.props.id,
                                             d: dungeon,

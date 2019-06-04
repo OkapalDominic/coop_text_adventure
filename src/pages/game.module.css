@@ -1,5 +1,13 @@
 /*This css kind of sucks wish for bootstrap...*/
 
+.scrollArea {
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 0;
+    height: 100%;
+    text-align: left;
+}
+
 /*
 Row to contain column
 */

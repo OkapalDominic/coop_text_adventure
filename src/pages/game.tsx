@@ -1,9 +1,15 @@
 import * as React from 'react';
-import { RouteComponentProps } from 'react-router-dom';
 
 import styles from './game.module.css';
 
-type Props = {};
+type Props = {
+	messages: JSX.Element[],
+	hints: string[],
+	players: string[],
+	inventory: string[],
+	rooms: string[],
+	items: string[],
+};
 interface State {
 	areaText: string;
 	cmdText: string;
@@ -17,13 +23,10 @@ interface DataProp {
 	dataElms?: string[];
 }
 
-function TextArea(props: DataProp) {
+function History(data: DataProp) {
 	return (
 		<div className={styles['column']}>
-			<p>Text Area </p>
-			<textarea readOnly>
-				{props.dataStr}
-			</textarea>
+			<div className={styles.scrollArea}>{data}</div>
 		</div>
 	);
 }
@@ -32,7 +35,7 @@ function InputArea(props: DataProp) {
 	return (
 		<div className={styles['column']}>
 			<p>Input Area</p>
-			Command: 
+			Command:
 			<input type='text' value={props.dataStr} />
 			<input type='submit' value='Enter' />
 		</div>
@@ -44,7 +47,7 @@ function HintsArea(props: DataProp) {
 	if (props.dataElms !== undefined) {
 		hintElement = [];
 		// currently slice so only 10 hints max
-		props.dataElms.slice(0,10).forEach((e) => {
+		props.dataElms.slice(0, 10).forEach((e) => {
 			if (e.length > 0) {
 				hintElement.push(<button>{e}</button>);
 			}
@@ -81,7 +84,7 @@ function ListTemplate(props: DataProp) {
 }
 
 class GamePage extends React.Component<Props, State> {
-	
+
 	constructor(props: Props) {
 		super(props);
 		this.state = {
@@ -93,31 +96,23 @@ class GamePage extends React.Component<Props, State> {
 			inventoryText: 'your stuff good sir',
 		};
 	}
-	
+
 	render() {
 		return (
 			<div className={styles['row']}>
 				<div className={styles['column']}>
-					<div className={styles['row']}>
-						<TextArea dataStr={this.state.areaText} />
-					</div>
-					<div className={styles['row']}>
-						<InputArea dataStr={this.state.cmdText} />
-					</div>
-					<div className={styles['row']}>
-						<HintsArea dataElms={this.state.hintText.split(' ')}/>
-					</div>
+					<History messages={this.props.messages} />
+
+					<InputArea dataStr={this.state.cmdText} />
+
+					<HintsArea dataElms={this.state.hintText.split(' ')} />
 				</div>
 				<div className={styles['column']}>
-					<div className={styles['row']}>
-						<ListTemplate dataStr={this.state.worldText} dataElms={['one', 'two', 'three']}/>
-					</div>
-					<div className={styles['row']}>
-						<ListTemplate dataStr={this.state.worldText}/>
-					</div>
-					<div className={styles['row']}>
-						<ListTemplate dataElms={['one', 'two', 'three']}/>
-					</div>
+					<ListTemplate dataStr={this.state.worldText} dataElms={['one', 'two', 'three']} />
+
+					<ListTemplate dataStr={this.state.worldText} />
+
+					<ListTemplate dataElms={['one', 'two', 'three']} />
 				</div>
 			</div>
 		);

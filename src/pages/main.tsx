@@ -142,6 +142,11 @@ export class MainPage extends React.Component<Props, State> {
                         res: { s: 'dungeons - ' + res.s, d: res.d },
                         i: res.d.split(' '),
                     });
+                    case 'inventory':
+                        this.setState({
+                            res: { s: 'dungeons - ' + res.s, d: res.d },
+                            i: res.d.split(' '),
+                        });
                     break;
                 case 'areas':
                     this.setState({

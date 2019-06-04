@@ -25,35 +25,6 @@ class LoginPage extends React.Component<Props, State> {
         this.handleBegin = this.handleBegin.bind(this);
     }
 
-    // onLogin(res: LoginResponse): void {
-    //     if (res.success) {
-    //         sessionStorage.setItem('username', this.state.username);
-    //         sessionStorage.setItem('room', res.room);
-    //         if (res.players.length > 1) {
-    //             let p2: number = this.state.username === res.players[0] ? 1 : 0;
-    //             sessionStorage.setItem('player2', res.players[p2]);
-    //         } else {
-    //             sessionStorage.setItem('player2', '');
-    //         }
-    //         this.setState({
-    //             message: {
-    //                 classes: 'success',
-    //                 message: 'Thou Hast Chosen Goodly!',
-    //             }
-    //         });
-    //         setTimeout(() => {
-    //             this.props.history.push('/tavern');
-    //         }, 1200);
-    //     } else {
-    //         this.setState({
-    //             message: {
-    //                 classes: 'error',
-    //                 message: 'Thou Hast Chosen Poorly!',
-    //             }
-    //         });
-    //     }
-    // }
-
     updateUsername(event: React.ChangeEvent<HTMLInputElement>) {
         this.setState({
             username: event.target.value
@@ -63,15 +34,9 @@ class LoginPage extends React.Component<Props, State> {
     handleBegin(event: React.FormEvent) {
         event.preventDefault();
         this.props.socket.emit('login', {
-            s: this.state.username,
-            d: 'The players name',
-        })
-        // let req: LoginRequest = new LoginRequest();
-        // req.username = this.state.username || '';
-        // if (sessionStorage.getItem('sessionKey') !== undefined) {
-        //     req.sessionKey = sessionStorage.getItem('sessionKey') || '';
-        // }
-        // login(req, this.onLogin);
+            s: this.props.socket.id,
+            d: this.state.username,
+        });
     }
 
     render() {
