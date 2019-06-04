@@ -111,25 +111,25 @@ export class TestPage extends React.Component<Props, State> {
 					break;
 				case 'players':
 					this.setState({ 
-						res: {s: 'dungeons - ' + res.s, d: res.d },
+						res: {s: 'players - ' + res.s, d: res.d },
 						p: res.d.split(' '),
 					});
 					break;
 				case 'hints':
 					this.setState({ 
-						res: {s: 'dungeons - ' + res.s, d: res.d },
+						res: {s: 'hints - ' + res.s, d: res.d },
 						h: res.d.split(' '),
 					});
 					break;
 				case 'items':
 					this.setState({ 
-						res: {s: 'dungeons - ' + res.s, d: res.d },
+						res: {s: 'items - ' + res.s, d: res.d },
 						i: res.d.split(' '),
 					});
 					break;
 				case 'areas':
 					this.setState({ 
-						res: {s: 'dungeons - ' + res.s, d: res.d },
+						res: {s: 'areas - ' + res.s, d: res.d },
 						a: res.d.split(' '),
 					});
 					break;
@@ -160,7 +160,7 @@ export class TestPage extends React.Component<Props, State> {
 		// occurs when client attempts to sendCommand to dungeon
 		// -------------------------------------------
 		this.socket.on('sendCommand', (res: DumpProp) => {
-			console.log('sendCommand')
+			console.log('sendCommand -', res.s)
 			this.setState({ res: {s: res.s, d: res.d } });
 		});
 	}
@@ -228,7 +228,7 @@ export class TestPage extends React.Component<Props, State> {
 		
 		
 		// -------------------------------------------
-		// generate login html
+		// generate game html
 		// also handles sending userCommands to server
 		// -------------------------------------------
 		let game = undefined;
