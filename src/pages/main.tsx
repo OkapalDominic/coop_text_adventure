@@ -25,15 +25,16 @@ interface DumpProp {
 // state used by testmessages.tsx
 // -------------------------------------------
 interface State {
-    res: DumpProp;
-    d: string[]; // dungeons on server
-    p: string[]; // players in dungeon
-    h: string[]; // hints from server
-    i: string[]; // player inventory
-    a: string[]; // area information (connected areas and items) 
+    dungeons: string[]; // dungeons on server
+    players: string[]; // players in dungeon
+    hints: string[]; // hints from server
+    inventory: string[]; // player inventory
+    items: string[]; // items in the area
+    connectedAreas: string[]; // area information (connected areas and items) 
     id: string; // id on server
-    u: string; // username
-    dun: string; // dungeon currently in
+    username: string; // username
+    messages: JSX.Element[]; // message log
+    currentDungeon: string; // dungeon currently in
     cmd: string; // cmd to send to server
     currentPage: PAGE; // What page to display
     loginMsg: string;
@@ -47,18 +48,16 @@ export class MainPage extends React.Component<Props, State> {
         super(props);
 
         this.state = {
-            res: {
-                s: 'No Status',
-                d: 'No Connection',
-            },
-            d: [],
-            p: [],
-            h: [],
-            i: [],
-            a: [],
+            dungeons: [],
+            players: [],
+            hints: [],
+            inventory: [],
+            items: [],
+            connectedAreas: [],
             id: '???',
-            u: '???',
-            dun: '???',
+            username: '???',
+            messages: [],
+            currentDungeon: '???',
             cmd: '',
             currentPage: 'NONE',
             loginMsg: 'N',
@@ -78,9 +77,8 @@ export class MainPage extends React.Component<Props, State> {
         // occurs when client first connects to server
         // -------------------------------------------
         this.socket.on('connected', (res: DumpProp) => {
-            console.log('connected')
+            this.logIt('connected', res);
             this.setState({
-                res: { s: res.s, d: res.d },
                 id: res.d,
                 currentPage: 'LOGIN',
             });
@@ -92,22 +90,22 @@ export class MainPage extends React.Component<Props, State> {
         // occurs when client attempts to login to the server
         // -------------------------------------------
         this.socket.on('login', (res: DumpProp) => {
-            console.log('login')
+            this.logIt('login', res);
             if (res.s === 'success') {
                 this.setState({
                     loginMsg: 'S',
+                    username: res.d,
                 });
                 window.setTimeout(() => {
                     this.setState({
                         currentPage: 'LOBBY',
-                    }); 
+                    });
                 }, 1200);
             } else {
                 this.setState({
                     loginMsg: 'E',
                 });
             }
-            this.setState({ res: { s: res.s, d: res.d } });
         });
 
         // -------------------------------------------
@@ -117,41 +115,36 @@ export class MainPage extends React.Component<Props, State> {
         // occurs when dungeon game state is changed
         // -------------------------------------------
         this.socket.on('infoDungeon', (res: DumpProp) => {
-            console.log('infoDungeon: ', res.s);
+            this.logIt('infoDungeon', res);
             switch (res.s) {
                 case 'dungeons':
                     this.setState({
-                        res: { s: 'dungeons - ' + res.s, d: res.d },
-                        d: res.d.split(' '),
+                        dungeons: res.d.split('\n'),
                     });
                     break;
                 case 'players':
                     this.setState({
-                        res: { s: 'dungeons - ' + res.s, d: res.d },
-                        p: res.d.split(' '),
+                        players: res.d.split('\n'),
                     });
                     break;
                 case 'hints':
                     this.setState({
-                        res: { s: 'dungeons - ' + res.s, d: res.d },
-                        h: res.d.split(' '),
+                        hints: res.d.split('\n'),
                     });
                     break;
                 case 'items':
                     this.setState({
-                        res: { s: 'dungeons - ' + res.s, d: res.d },
-                        i: res.d.split(' '),
+                        items: res.d.split('\n'),
                     });
-                    case 'inventory':
-                        this.setState({
-                            res: { s: 'dungeons - ' + res.s, d: res.d },
-                            i: res.d.split(' '),
-                        });
+                    break;
+                case 'inventory':
+                    this.setState({
+                        inventory: res.d.split('\n'),
+                    });
                     break;
                 case 'areas':
                     this.setState({
-                        res: { s: 'dungeons - ' + res.s, d: res.d },
-                        a: res.d.split(' '),
+                        connectedAreas: res.d.split('\n'),
                     });
                     break;
                 default:
@@ -165,14 +158,13 @@ export class MainPage extends React.Component<Props, State> {
         // occurs when client attempts to enter a dungeon
         // -------------------------------------------
         this.socket.on('joinDungeon', (res: DumpProp) => {
-            console.log('joinDungeon')
+            this.logIt('joinDungeon', res);
             if (res.s === 'success') {
                 this.setState({
-                    dun: res.d,
+                    currentDungeon: res.d,
                     currentPage: 'GAME',
                 });
             }
-            this.setState({ res: { s: res.s, d: res.d } });
         });
 
         // -------------------------------------------
@@ -181,9 +173,20 @@ export class MainPage extends React.Component<Props, State> {
         // occurs when client attempts to sendCommand to dungeon
         // -------------------------------------------
         this.socket.on('sendCommand', (res: DumpProp) => {
-            console.log('sendCommand')
-            this.setState({ res: { s: res.s, d: res.d } });
+            this.logIt('sendCommand', res);
+            let msg: JSX.Element = <div key={this.state.messages.length}>{res.s}: {res.d}</div>;
+            let msgs: JSX.Element[] = this.state.messages;
+            msgs.push(msg);
+            this.setState({
+                messages: msgs,
+            });
         });
+    }
+
+    logIt(on: string, res: DumpProp) {
+        console.log(on);
+        console.log(`res.s: ${res.s}`);
+        console.log(`res.d: ${res.d}`);
     }
 
     render() {
@@ -192,11 +195,26 @@ export class MainPage extends React.Component<Props, State> {
         // -------------------------------------------
         switch (this.state.currentPage) {
             case 'LOGIN':
-                return <LoginPage socket={this.socket} message={this.state.loginMsg} />;
+                return (<LoginPage
+                    socket={this.socket}
+                    message={this.state.loginMsg}
+                />);
             case 'LOBBY':
-                return <LobbyPage username={this.state.u} dungeons={this.state.d} id={this.state.id} socket={this.socket} />;
+                return (<LobbyPage
+                    username={this.state.username}
+                    dungeons={this.state.dungeons}
+                    id={this.state.id}
+                    socket={this.socket}
+                />);
             case 'GAME':
-                return <GamePage />;
+                return (<GamePage
+                    messages={this.state.messages}
+                    hints={this.state.hints}
+                    players={this.state.players}
+                    inventory={this.state.inventory}
+                    rooms={this.state.connectedAreas}
+                    items={this.state.items}
+                />);
             default:
                 return <ErrorPage />;
         }

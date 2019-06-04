@@ -17,67 +17,64 @@ interface State {
 	worldText: string;
 	characterText: string;
 	inventoryText: string;
+	backgrounds: string[];
 }
 interface DataProp {
-	dataStr?: string;
-	dataElms?: string[];
+	dataStrArray?: string[];
+	dataString?: string;
+	dataElementArray?: JSX.Element[];
 }
 
-function History(data: DataProp) {
+function History(props: DataProp) {
 	return (
-		<div className={styles['column']}>
-			<div className={styles.scrollArea}>{data}</div>
+		<div className={styles.history}>
+			<div className={styles.scrollArea}>{props.dataElementArray}</div>
 		</div>
 	);
 }
 
-function InputArea(props: DataProp) {
+function Commands(props: DataProp) {
 	return (
-		<div className={styles['column']}>
-			<p>Input Area</p>
-			Command:
-			<input type='text' value={props.dataStr} />
-			<input type='submit' value='Enter' />
+		<div className={styles.commands}>
+			<input type='text' placeholder={props.dataString} />
+			<button type='button'>Submit</button>
 		</div>
 	);
 }
 
 function HintsArea(props: DataProp) {
-	let hintElement;
-	if (props.dataElms !== undefined) {
-		hintElement = [];
+	let hintElement: JSX.Element[] = [];
+	if (props.dataStrArray !== undefined) {
 		// currently slice so only 10 hints max
-		props.dataElms.slice(0, 10).forEach((e) => {
+		props.dataStrArray.slice(0, 10).forEach((e, i) => {
 			if (e.length > 0) {
-				hintElement.push(<button>{e}</button>);
+				hintElement.push(<button key={i}>{e}</button>);
 			}
 		});
-		if (hintElement.length === 0) {
-			hintElement = <p>No Hints</p>
-		}
-	} else {
-		hintElement = <p>No Hints</p>;
 	}
-	return (
-		<div className={styles['column']}>
-			<p>Hint Area</p>
-			{hintElement}
-		</div>
-	);
+	if(hintElement.length > 0) {
+		return (
+			<div className={styles.hints}>
+				{hintElement}
+			</div>
+		);
+	} else {
+		return <p>There Are No Hints For You!</p>;
+	}
 }
 
 function ListTemplate(props: DataProp) {
 	let listElement;
-	if (props.dataElms !== undefined) {
+	if (props.dataStrArray !== undefined) {
 		listElement = [];
-		listElement = props.dataElms.map((e) => {
-			return (<li>{e}</li>);
+		listElement = props.dataStrArray.map((e, i) => {
+			return (<li key={i}>{e}</li>);
 		});
 	}
 	return (
-		<div className={styles['column']}>
+		<div>
 			<p>ListTemplate</p>
-			<p>{props.dataStr}</p>
+			<p>{props.dataString}</p>
 			<ol>{listElement}</ol>
 		</div>
 	);
@@ -94,25 +91,36 @@ class GamePage extends React.Component<Props, State> {
 			worldText: 'It is a small world after all',
 			characterText: 'go look in a mirror',
 			inventoryText: 'your stuff good sir',
+			backgrounds: [
+				'https://images.unsplash.com/photo-1542617454-e7d68f9d5626?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9',
+				'https://images.unsplash.com/photo-1548368295-b7158d905383?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9',
+				'https://images.unsplash.com/photo-1545263467-4e257e3b5ce7?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9',
+				'https://images.unsplash.com/photo-1508404768051-0809ca78340f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9'
+			],
 		};
 	}
 
 	render() {
+		let bkgndImage: string = this.state.backgrounds[Math.floor(Math.random() * this.state.backgrounds.length)];
+		let size: string = '&w=' + window.innerWidth + '&h=' + window.innerHeight;
 		return (
-			<div className={styles['row']}>
-				<div className={styles['column']}>
-					<History messages={this.props.messages} />
+			<div
+				className={styles['row']}
+				style={{backgroundImage: `url(${bkgndImage}${size}&fit=crop&auto=format)`}}
+			>
+				<div className={styles['main-content']}>
+					<History dataElementArray={this.props.messages} />
 
-					<InputArea dataStr={this.state.cmdText} />
+					<Commands dataString="Command Thyself..." />
 
-					<HintsArea dataElms={this.state.hintText.split(' ')} />
+					<HintsArea dataStrArray={this.props.hints} />
 				</div>
-				<div className={styles['column']}>
-					<ListTemplate dataStr={this.state.worldText} dataElms={['one', 'two', 'three']} />
+				<div className={styles['side-bar']}>
+					<ListTemplate dataString={this.state.worldText} dataStrArray={['one', 'two', 'three']} />
 
-					<ListTemplate dataStr={this.state.worldText} />
+					<ListTemplate dataString={this.state.worldText} />
 
-					<ListTemplate dataElms={['one', 'two', 'three']} />
+					<ListTemplate dataStrArray={['one', 'two', 'three']} />
 				</div>
 			</div>
 		);

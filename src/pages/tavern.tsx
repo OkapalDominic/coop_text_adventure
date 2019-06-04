@@ -1,9 +1,5 @@
 import React from 'react';
-import { RouteComponentProps } from 'react-router-dom';
 import styles from './tavern.module.css';
-import { LoginResponse } from '../api_objects/login_api';
-// import { enterRoom, leftRoom, removeAllListeners, readyToPlay, gameSetup } from '../components/api';
-import { LeftRoom, ReadyToPlay, GameSetup } from '../api_objects/lobby_messages';
 import TavernDialog from '../components/tavern_dialog';
 
 type Props = {
@@ -29,7 +25,6 @@ class LobbyPage extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props);
 
-        this.onGameSetup = this.onGameSetup.bind(this);
         this.startMsgInterval = this.startMsgInterval.bind(this);
 
         this.myDialog = new TavernDialog(this.props.username);
@@ -62,10 +57,6 @@ class LobbyPage extends React.Component<Props, State> {
         }, TIME_TO_WAIT);
     }
 
-    onGameSetup(res: GameSetup): void {
-        //this.props.history.push('/game');
-    }
-
     render() {
         return (
             <div className={styles.container}>
@@ -87,7 +78,6 @@ class LobbyPage extends React.Component<Props, State> {
                                     key={dungeon}
                                     type='button'
                                     onClick={(event) => {
-                                        console.log(`${this.props.id}\n${dungeon}`);
                                         this.props.socket.emit('joinDungeon', {
                                             s: this.props.id,
                                             d: dungeon,
