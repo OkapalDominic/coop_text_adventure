@@ -1,121 +1,172 @@
 import { createServer, Server } from 'http';
 import * as express from 'express';
 import * as socketIo from 'socket.io';
-import { LoginRequest, LoginResponse, Connected } from './api_objects/login_api';
-import Player from './components/player';
-import Players from './components/players';
-import Rooms from './components/rooms';
-import Room from './components/room';
-import { LeftRoom, ReadyToPlay } from './api_objects/room_messages';
+
+// our imports/files
+import {Player, PlayerList} from './components/player';
+import {Dungeon, DungeonList, DungeonFactory} from './components/dungeon';
+
+export interface DumpProp {
+	s: string;
+	d: string;
+}
 
 export class AdventureServer {
-    public static readonly PORT: number = 7777;
     private app: express.Application;
-    private server: Server;
+	private server: Server;
     private io: SocketIO.Server;
-    private port: string | number;
-    private players: Players;
-    private rooms: Rooms;
-
+	private port: string | number;
+	
+	private dungeons: DungeonList;
+	private players: PlayerList
+	
     constructor() {
-        this.players = new Players();
-        this.rooms = new Rooms();
-        this.createApp();
-        this.config();
-        this.createServer();
-        this.sockets();
-        this.listen();
+		// create server
+		this.app = express();
+		this.server = createServer(this.app);
+		// set up socketIo
+		this.io = socketIo(this.server);
+		// choose port
+		this.port = process.env.PORT || 7777;
+		
+		// set up local data
+		this.dungeons = new DungeonList();
+		this.dungeons.addDungeon(DungeonFactory.testDungeon());
+		this.dungeons.addDungeon(DungeonFactory.testDungeon('Derpgeon'));
+		this.dungeons.addDungeon(DungeonFactory.testDungeon('AnotherDungeon'));
+		this.players = new PlayerList();
+		
+		// listen for messages
+		this.listen();
     }
-
-    public getApp(): express.Application {
+	
+	public getApp(): express.Application {
         return this.app;
     }
-
-    private createApp(): void {
-        this.app = express();
-    }
-
-    private config(): void {
-        this.port = process.env.PORT || AdventureServer.PORT;
-    }
-
-    private createServer(): void {
-        this.server = createServer(this.app);
-    }
-
-    private sockets(): void {
-        this.io = socketIo(this.server);
-    }
+	
+	private emit(p: Player, type: string, res: DumpProp): void {
+		/*
+		console.log(`socket.id: ${socket.id}`);
+		console.log(`emit type: ${type}`);
+		console.log(`str res.s: ${res.s}`);
+		console.log(`str res.d: ${res.d}`);
+		*/
+		p.getSocket().emit(type, res);
+	}
 
     private listen(): void {
-        this.server.listen(this.port, () => {
-            console.log('Running server on port %s', this.port);  // eslint-disable-line no-console
-        });
-
-        this.io.on('connect', (socket: socketIo.Socket) => {
-            // Create new player object on this connection
-            var player: Player = this.players.create(socket.id, socket);
-            socket.emit('connected', new Connected(player.sessionKey()));
-
-            socket.on('login', (req: LoginRequest) => {
-                // Update sessionKey incase client is reconnecting
-                player.sessionKey(req.sessionKey);
-
-                // Remove player from room if they were in one before
-                let prevPlayer: Player = this.rooms.remove(player);
-                if(prevPlayer !== undefined) {
-                    // Tell other player(s) in room, they left
-                    this.io.to(prevPlayer.room()).emit('playerLeft', new LeftRoom(prevPlayer.username()));
-                }
-
-                // Attempt to add player
-                let added: boolean;
-                let res: LoginResponse = new LoginResponse();
-
-                [added, player] = this.players.add(player, req.username);
-                if (added) {
-                    res.success = true;
-                    let room: Room = this.rooms.add(player, this.io);
-                    socket.join(room.name());
-                    res.room = room.name();
-                    res.players = room.players();
-                    this.io.to(room.name()).emit('login', res);
-                } else {
-                    res.success = false;
-                    res.room = undefined;
-                    res.players = undefined;
-                    socket.emit('login', res);
-                }
-            });
-
-            socket.on('readyToPlay', (req: ReadyToPlay) => {
-                player.ready(req.ready);
-                this.io.to(player.room()).emit('readyToPlay', req);
-                let room: Room = this.rooms.getRoom(player.room());
-                if(req.ready && room.ready()) {
-                    room.inProgress(true);
-                    room.startGame();
-                }
-            });
-
-            socket.on('disconnect', () => {
-                this.players.disconnected(player, this.removeOnDisconnect, this);
-            });
-        });
-    }
-
-    /**
-     * 
-     * @param disconnected -- If this should disconnect the player
-     * @param player -- The player in danger of being disconnected
-     * @param t -- this, because it's being called as a callback
-     */
-    private removeOnDisconnect(disconnected: boolean, player: Player, t: AdventureServer): void {
-        if (disconnected) {
-            let p: Player = t.rooms.remove(player);
-            if (p !== undefined) {
-                t.io.to(p.room()).emit('playerLeft', new LeftRoom(p.username()));
-            }
-        }
-    }
+		// listen on port
+		this.server.listen(this.port, () => {
+			console.log(`Running server on port ${this.port}`);
+		});
+		
+		// handle connections to server
+		this.io.on('connect', (socket: socketIo.Socket) => {
+			console.log('server socket connect');
+			socket.emit('connected', {
+				s: 'web client connected',
+				d: socket.id,
+			});
+			
+			// -------------------------------------------
+			// add player to server
+			// -------------------------------------------
+			socket.on('login', (req: DumpProp) => {
+				console.log('server socket login');
+				/*console.log(req.s);
+				console.log(req.d);
+				*/
+				let p = new Player(req.s, req.d, socket);
+				if (this.players.addPlayer(p) === true) {
+					this.emit(p, 'login', {
+						s: 'success',
+						d: 'Thou Hast Chosen Goodly!',
+					});
+					this.emit(p, 'infoDungeon', {
+						s: 'dungeons',
+						d: this.dungeons.getDungeonNames().join(' '),
+					});
+				} else {
+					this.emit(p, 'login', {
+						s: 'error',
+						d: 'Thou Hast Chosen Poorly! Try a new name.',
+					});
+				}
+			});
+			
+			// -------------------------------------------
+			// add player to dungeon
+			// -------------------------------------------
+			socket.on('joinDungeon', (req: DumpProp) => {
+				console.log('server socket joinDungeon');
+				//console.log(req.s);
+				//console.log(req.d);
+				let p = this.players.getPlayer(req.s);
+				let d = this.dungeons.getDungeon(req.d);
+				if (p !== undefined && d !== undefined) {
+					if (p.enterDungeon(d) === true) {
+						console.log(`${req.s} added to ${req.d}`);
+						this.emit(p, 'joinDungeon', {
+							s: 'success',
+							d: d.getName(),
+						});
+					} else {
+						console.log('Unable to add player to dungeon... oops.');
+						this.emit(p, 'joinDungeon', {
+							s: 'error',
+							d: 'Unable to add player to dungeon... oops.',
+						});
+					}
+				} else {
+					console.log('Unable to find player and/or dungeon.');
+					this.emit(p, 'joinDungeon', {
+						s: 'error',
+						d: 'Either you or the dungeon does not exits.',
+					});
+				}
+			});
+			
+			// -------------------------------------------
+			// send command to dungeon player is in
+			// -------------------------------------------
+			socket.on('sendCommand', (req: DumpProp) => {
+				console.log('server socket sendCommand');
+				let p = this.players.getPlayer(req.s);
+				if (p !== undefined) {
+					let d = p.currentDungeon();
+					if (d !== undefined) {
+						console.log(`"${req.d}" sent to "${d.getName()}" by "${p.getDescription()}"`);
+						d.parseCommand(req.d, p);
+						/*this.emit(socket, 'sendCommand', {
+							s: 'success',
+							d: req.d,
+						});*/
+					} else {
+						console.log('player is not in dungeon');
+						this.emit(p, 'sendCommand', {
+							s: 'error',
+							d: 'Player not in dungeon',
+						});
+					}
+				} else {
+					console.log('Unable to find player');
+					this.emit(p, 'sendCommand', {
+						s: 'error',
+						d: 'Unknown player',
+					});
+				}
+			});
+			
+			// -------------------------------------------
+			// disconnect player
+			// ignore disconnects???
+			// -------------------------------------------
+			socket.on('disconnect', () => {
+				console.log('server socket disconnect');
+				/*if (player) {
+					console.log('player disconnected');
+				}*/
+			});
+		});
+	}
 }
