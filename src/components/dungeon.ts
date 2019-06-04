@@ -111,7 +111,7 @@ export class Dungeon extends Entity {
 			default:
 				console.log(`error unknown command "${cmd[0]}"`);
 				p.getSocket().emit('sendCommand', {
-					s: 'error',
+					s: p.getDescription(),
 					d: `error unknown command "${cmd[0]}"`,
 				});
 		}
@@ -125,7 +125,7 @@ export class Dungeon extends Entity {
 			p.enterArea(a);
 			// tell client about success
 			p.getSocket().emit('sendCommand', {
-				s: 'success',
+				s: p.getDescription(),
 				d: `entered area "${arg}"`,
 			});
 			// update client areas
@@ -136,7 +136,7 @@ export class Dungeon extends Entity {
 		} else {
 			console.log(`Unable to find room "${arg}" to enter...`);
 			p.getSocket().emit('sendCommand', {
-				s: 'error',
+				s: p.getDescription(),
 				d: `Unable to find room "${arg}" to enter...`,
 			});
 		}
