@@ -84,7 +84,7 @@ export class AdventureServer {
 					});
 					this.emit(p, 'infoDungeon', {
 						s: 'dungeons',
-						d: this.dungeons.getDungeonNames().join(' '),
+						d: this.dungeons.getDungeonNames().join('\n'),
 					});
 				} else {
 					this.emit(p, 'login', {

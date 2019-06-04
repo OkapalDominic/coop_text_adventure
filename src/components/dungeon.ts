@@ -119,7 +119,7 @@ export class Dungeon extends Entity {
 			if (str.length > 0) {
 				this.sendMessage(p, 'infoDungeon', {
 					s: 'players',
-					d: str.join(' '),
+					d: str.join('\n'),
 				});
 			}
 		});
@@ -133,19 +133,19 @@ export class Dungeon extends Entity {
 	sendInventory(p: Player): void {
 		this.sendMessage(p, 'infoDungeon', {
 			s: 'inventory',
-			d: p.getItemNames().join(' '),
+			d: p.getItemNames().join('\n'),
 		});
 	}
 	sendAreas(p: Player): void {
 		this.sendMessageRoom(p, 'infoDungeon', {
 			s: 'areas',
-			d: p.getCurrentArea().getConnectedAreaNames().join(' '),
+			d: p.getCurrentArea().getConnectedAreaNames().join('\n'),
 		});
 	}
 	sendItems(p: Player): void {
 		this.sendMessageRoom(p, 'infoDungeon', {
 			s: 'items',
-			d: p.getCurrentArea().getItemNames().join(' '),
+			d: p.getCurrentArea().getItemNames().join('\n'),
 		});
 	}
 	
