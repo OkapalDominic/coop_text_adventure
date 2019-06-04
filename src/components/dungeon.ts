@@ -164,14 +164,14 @@ export class Dungeon extends Entity {
 				this.commandEnter(cmd[1], p);
 				break;
 			case 'pickup':
-				// see if current area has item to pickup
-				break
+				this.commandPickup(cmd[1], p);
+				break;
 			case 'drop':
 				// see if player has item to drop into area
-				break
+				break;
 			case '':
 				// put logic here
-				break
+				break;
 			default:
 				console.log(`error unknown command "${cmd[0]}"`);
 				this.sendMessage(p, 'sendCommand', {
@@ -201,6 +201,26 @@ export class Dungeon extends Entity {
 			this.sendMessage(p, 'sendCommand', {
 				s: p.getDescription(),
 				d: `Unable to find room "${arg}" to enter...`,
+			});
+		}
+	}
+	
+	commandPickup(arg: string, p: Player): void {
+		if (p.getCurrentArea().hasItem(arg)) {
+			const i = p.getCurrentArea().getItem(arg);
+			console.log(`Picked up item "${arg}"`);
+			i.onPickUp(p);
+			this.sendMessageRoom(p, 'sendCommand', {
+				s: p.getDescription(),
+				d: `Picked up item "${arg}"`,
+			});
+			this.sendInventory(p);
+			this.sendItems(p);
+		} else {
+			console.log(`Unable to find item "${arg}" to pickup...`);
+			this.sendMessage(p, 'sendCommand', {
+				s: p.getDescription(),
+				d: `Unable to find item "${arg}" to pickup...`,
 			});
 		}
 	}

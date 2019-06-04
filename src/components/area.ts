@@ -69,6 +69,9 @@ export class Area extends Entity {
 	hasItem(s: string): boolean {
 		return this.items.hasItem(s);
 	}
+	getItem(s: string): Item {
+		return this.items.getItem(s);
+	}
 	getItemNames(): string[] {
 		return this.items.getItemNames();
 	}
