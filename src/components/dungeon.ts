@@ -166,8 +166,11 @@ export class Dungeon extends Entity {
 			case 'pickup':
 				this.commandPickup(cmd[1], p);
 				break;
+			case 'use':
+				this.commandUse(cmd[1], p);
+				break;
 			case 'drop':
-				// see if player has item to drop into area
+				this.commandDrop(cmd[1], p);
 				break;
 			case '':
 				// put logic here
@@ -221,6 +224,45 @@ export class Dungeon extends Entity {
 			this.sendMessage(p, 'sendCommand', {
 				s: p.getDescription(),
 				d: `Unable to find item "${arg}" to pickup...`,
+			});
+		}
+	}
+	
+	commandUse(arg: string, p: Player): void {
+		if (p.hasItem(arg)) {
+			const i = p.getItem(arg);
+			console.log(`Used item "${arg}"`);
+			i.onUse();
+			this.sendMessageRoom(p, 'sendCommand', {
+				s: p.getDescription(),
+				d: `Used item "${arg}"`,
+			});
+			this.sendInventory(p);	
+		} else {
+			console.log(`Unable to find item "${arg}" to use...`);
+			this.sendMessage(p, 'sendCommand', {
+				s: p.getDescription(),
+				d: `Unable to find item "${arg}" to use...`,
+			});
+		}
+	}
+	
+	commandDrop(arg: string, p: Player): void {
+		if (p.hasItem(arg)) {
+			const i = p.getItem(arg);
+			console.log(`Dropped item "${arg}"`);
+			i.onDrop(p.getCurrentArea());
+			this.sendMessageRoom(p, 'sendCommand', {
+				s: p.getDescription(),
+				d: `Dropped up item "${arg}"`,
+			});
+			this.sendInventory(p);
+			this.sendItems(p);		
+		} else {
+			console.log(`Unable to find item "${arg}" to drop...`);
+			this.sendMessage(p, 'sendCommand', {
+				s: p.getDescription(),
+				d: `Unable to find item "${arg}" to drop...`,
 			});
 		}
 	}
