@@ -172,8 +172,8 @@ export class Dungeon extends Entity {
 			case 'drop':
 				this.commandDrop(cmd[1], p);
 				break;
-			case '':
-				// put logic here
+			case 'chat':
+				this.commandChat(command, p);
 				break;
 			default:
 				console.log(`error unknown command "${cmd[0]}"`);
@@ -263,6 +263,23 @@ export class Dungeon extends Entity {
 			this.sendMessage(p, 'sendCommand', {
 				s: p.getDescription(),
 				d: `Unable to find item "${arg}" to drop...`,
+			});
+		}
+	}
+	
+	commandChat(arg: string, p: Player): void {
+		let str = arg.slice(5);
+		if (str.length > 0) {
+			console.log(`chat: ${str}`);
+			this.sendMessageRoom(p, 'sendCommand', {
+				s: p.getDescription(),
+				d: str,
+			});
+		} else {
+			console.log(`no message to send...`);
+			this.sendMessage(p, 'sendCommand', {
+				s: p.getDescription(),
+				d: `no message to send...`,
 			});
 		}
 	}
