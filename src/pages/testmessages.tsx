@@ -106,31 +106,31 @@ export class TestPage extends React.Component<Props, State> {
 				case 'dungeons':
 					this.setState({ 
 						res: {s: 'dungeons - ' + res.s, d: res.d },
-						d: res.d.split(' '),
+						d: res.d.split('\n'),
 					});
 					break;
 				case 'players':
 					this.setState({ 
 						res: {s: 'players - ' + res.s, d: res.d },
-						p: res.d.split(' '),
+						p: res.d.split('\n'),
 					});
 					break;
 				case 'hints':
 					this.setState({ 
 						res: {s: 'hints - ' + res.s, d: res.d },
-						h: res.d.split(' '),
+						h: res.d.split('\n'),
 					});
 					break;
 				case 'items':
 					this.setState({ 
 						res: {s: 'items - ' + res.s, d: res.d },
-						i: res.d.split(' '),
+						i: res.d.split('\n'),
 					});
 					break;
 				case 'areas':
 					this.setState({ 
 						res: {s: 'areas - ' + res.s, d: res.d },
-						a: res.d.split(' '),
+						a: res.d.split('\n'),
 					});
 					break;
 				default:
