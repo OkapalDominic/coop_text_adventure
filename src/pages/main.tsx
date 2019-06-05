@@ -214,6 +214,7 @@ export class MainPage extends React.Component<Props, State> {
                     inventory={this.state.inventory}
                     rooms={this.state.connectedAreas}
                     items={this.state.items}
+                    socket={this.socket}
                 />);
             default:
                 return <ErrorPage />;

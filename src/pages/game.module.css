@@ -42,6 +42,9 @@ Row to contain column
 
 .commands {
 	margin-top: 5px;
+	display: block;
+}
+.commands form {
 	display: flex;
 }
 .commands input, .commands button {

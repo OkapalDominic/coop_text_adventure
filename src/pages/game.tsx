@@ -9,20 +9,17 @@ type Props = {
 	inventory: string[],
 	rooms: string[],
 	items: string[],
+	socket: SocketIOClient.Socket,
 };
 interface State {
-	areaText: string;
-	cmdText: string;
-	hintText: string;
-	worldText: string;
-	characterText: string;
-	inventoryText: string;
 	backgrounds: string[];
 }
 interface DataProp {
 	dataStrArray?: string[];
 	dataString?: string;
 	dataElementArray?: JSX.Element[];
+	onClick?: (event: React.FormEvent) => void;
+	onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 function History(props: DataProp) {
@@ -36,8 +33,10 @@ function History(props: DataProp) {
 function Commands(props: DataProp) {
 	return (
 		<div className={styles.commands}>
-			<input type='text' placeholder={props.dataString} />
-			<button type='button'>Submit</button>
+			<form onSubmit={props.onClick}>
+				<input type='text' placeholder={props.dataString} onChange={props.onChange} />
+				<button type='submit' onClick={props.onClick}>Submit</button>
+			</form>
 		</div>
 	);
 }
@@ -52,7 +51,7 @@ function HintsArea(props: DataProp) {
 			}
 		});
 	}
-	if(hintElement.length > 0) {
+	if (hintElement.length > 0) {
 		return (
 			<div className={styles.hints}>
 				{hintElement}
@@ -64,33 +63,35 @@ function HintsArea(props: DataProp) {
 }
 
 function ListTemplate(props: DataProp) {
-	let listElement;
+	let listElement: JSX.Element[] = [];
 	if (props.dataStrArray !== undefined) {
-		listElement = [];
 		listElement = props.dataStrArray.map((e, i) => {
 			return (<li key={i}>{e}</li>);
 		});
 	}
-	return (
-		<div>
-			<p>ListTemplate</p>
-			<p>{props.dataString}</p>
-			<ol>{listElement}</ol>
-		</div>
-	);
+	if (listElement.length > 0) {
+		return (
+			<div>
+				<p>{props.dataString}</p>
+				<ol>{listElement}</ol>
+			</div>
+		);
+	} else {
+		return (
+			<div>
+				<p>{props.dataString}</p>
+				<p>You have nothing, not even pants.</p>
+			</div>
+		);
+	}
 }
 
 class GamePage extends React.Component<Props, State> {
+	private command: string = '';
 
 	constructor(props: Props) {
 		super(props);
 		this.state = {
-			areaText: 'The things that have happened',
-			cmdText: 'No Cmds',
-			hintText: 'Some minor hints :}',
-			worldText: 'It is a small world after all',
-			characterText: 'go look in a mirror',
-			inventoryText: 'your stuff good sir',
 			backgrounds: [
 				'https://images.unsplash.com/photo-1542617454-e7d68f9d5626?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9',
 				'https://images.unsplash.com/photo-1548368295-b7158d905383?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9',
@@ -98,6 +99,17 @@ class GamePage extends React.Component<Props, State> {
 				'https://images.unsplash.com/photo-1508404768051-0809ca78340f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9'
 			],
 		};
+		this.handleCmdClick = this.handleCmdClick.bind(this);
+		this.handleCmdChange = this.handleCmdChange.bind(this);
+	}
+
+	handleCmdChange(event: React.ChangeEvent<HTMLInputElement>): void {
+		this.command = event.target.value;
+	}
+
+	handleCmdClick(event: React.FormEvent): void {
+		event.preventDefault();
+		this.props.socket.emit('sendCommand', { s: this.props.socket.id, d: this.command });
 	}
 
 	render() {
@@ -106,21 +118,23 @@ class GamePage extends React.Component<Props, State> {
 		return (
 			<div
 				className={styles['row']}
-				style={{backgroundImage: `url(${bkgndImage}${size}&fit=crop&auto=format)`}}
+				style={{ backgroundImage: `url(${bkgndImage}${size}&fit=crop&auto=format)` }}
 			>
 				<div className={styles['main-content']}>
 					<History dataElementArray={this.props.messages} />
 
-					<Commands dataString="Command Thyself..." />
+					<Commands
+						dataString="Command Thyself..."
+						onClick={this.handleCmdClick}
+						onChange={this.handleCmdChange} />
 
 					<HintsArea dataStrArray={this.props.hints} />
 				</div>
 				<div className={styles['side-bar']}>
-					<ListTemplate dataString={this.state.worldText} dataStrArray={['one', 'two', 'three']} />
-
-					<ListTemplate dataString={this.state.worldText} />
-
-					<ListTemplate dataStrArray={['one', 'two', 'three']} />
+					<ListTemplate dataString={'Players in Dungeon'} dataStrArray={this.props.players} />
+					<ListTemplate dataString={'Inventory'} dataStrArray={this.props.inventory} />
+					<ListTemplate dataString={'Current Room'} dataStrArray={this.props.items} />
+					<ListTemplate dataString={'Connected Rooms'} dataStrArray={this.props.rooms} />
 				</div>
 			</div>
 		);
