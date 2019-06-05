@@ -8,61 +8,66 @@ html, body {
     background-position: center;
     background-size: cover;
     background-color: #0e0904;
-    position: absolute;
-    width: 100%;
-    min-width: 460px;
-    height: 100%;
-    min-height: 270px;
     margin: 0;
     padding: 0;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
 }
 
 .title {
     background-color: rgba(171, 173, 151, 55%);
     border-radius: 30px;
-    display: inline-block;
-    position: static;
     margin: 10px auto 0 auto;
     padding: 5px 10px 10px 10px;
     font-size: 1.5em;
 }
 
+.row {
+    display: flex;
+    width: calc(100vw - 20px);
+    height: calc(100vh - 1.5em - 55px);
+    justify-content: space-evenly;
+    margin: 10px;
+}
+
 .dialog {
     background-color: rgba(171, 173, 151, 55%);
     border-radius: 30px;
-    display: inline-block;
-    margin-top: 1%;
+    margin: 0;
     padding: 10px 10px;
-    height: 60%;
-    width: 40%;
 }
 .dungeons {
     background-color: rgba(171, 173, 151, 55%);
     border-radius: 30px;
-    display: inline-block;
-    margin-top: 1%;
+    margin: 0;
     padding: 10px 10px;
-    height: 60%;
-    width: 40%;
 }
 .scrollArea {
     overflow-y: auto;
     overflow-x: hidden;
     padding: 0;
+    margin: 0;
     height: 100%;
     text-align: left;
 }
 
-@media all and (orientation: portrait) {
-    html {
-        transform: rotate(90deg);
-        transform-origin: left top;
-        width: 100vh;
-        overflow-x: hidden;
-        position: absolute;
-        top: 0;
-        left: 100%;
-    }
+.rotate-container {
+    width: 100vw;
+    height: 100vh;
+    background-color: black;
+}
+.rotate-screen {
+    background-color: black;
+    color: white;
+    margin: 0;
+    padding: 0 5px;
+    font-size: 3em;
+    text-align: center;
+    width: calc(100% - 10px);
+    position: absolute;
+    top: 50%;
+    transform: translate(0, -50%);
 }
 
 @media (min-height: 271px) and (orientation: landscape) {

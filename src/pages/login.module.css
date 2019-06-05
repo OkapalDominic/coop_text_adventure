@@ -1,18 +1,12 @@
 html, body {
     background-color: #0e0904;
-    min-width: 460px;
 }
 
 .container {
-    background-image: url(https://images.unsplash.com/photo-1548445929-4f60a497f851?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=480&h=270&fit=crop&crop=focalpoint&fp-x=.45&fp-y=.65&fp-z=1.15&auto=format);
-    background-repeat: no-repeat;
-    background-position: center;
     background-color: #0e0904;
     position: absolute;
     width: 100%;
-    min-width: 460px;
     height: 100%;
-    min-height: 270px;
     margin: 0;
     padding: 0;
     text-align: center;
@@ -24,9 +18,9 @@ html, body {
 
 .title {
     position: absolute;
-    top: 5%;
+    top: 3%;
     left: 50%;
-    font-size: 1.5em;
+    font-size: 2em;
     width: 90%;
     transform: translate(-50%, -50%);
     background-color: rgba(170, 170, 170, 0.61);
@@ -39,7 +33,7 @@ html, body {
 
 .thy-name-border {
     position: absolute;
-    top: 30%;
+    top: 25%;
     left: 50%;
     transform: translate(-50%, -50%);
     margin: 0 auto;
@@ -69,7 +63,7 @@ html, body {
 
 .error, .neutral, .success {
     position: absolute;
-    top: 80%;
+    top: 34%;
     left: 50%;
     transform: translate(-50%, -50%);
     display: inline-block;
@@ -101,15 +95,15 @@ button {
 
 .begin-adventure {
     position: absolute;
-    top: 50%;
-    left: 50.5%;
+    bottom: 3%;
+    left: 50%;
     transform: translate(-50%, -50%);
     margin-top: 1%;
     padding: 0;
     border: none;
     border-radius: 40%;
-    width: 60px;
-    height: 23%;
+    width: 15%;
+    height: 25%;
     background-image: radial-gradient(#bbbb22, #333 68%);
     font-size: 1.3em;
     font-weight: bold;
@@ -127,85 +121,20 @@ button {
     background-image: radial-gradient(#bbbb22, #aa1616 75%);
 }
 
-@media all and (orientation: portrait) {
-    html {
-        transform: rotate(90deg);
-        transform-origin: left top;
-        width: 100vh;
-        overflow-x: hidden;
-        position: absolute;
-        top: 0;
-        left: 100%;
-    }
+.rotate-container {
+    width: 100vw;
+    height: 100vh;
+    background-color: black;
 }
-
-@media (min-height: 271px) and (orientation: landscape) {
-    .container {
-        background-image: url(https://images.unsplash.com/photo-1548445929-4f60a497f851?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=768&h=432&fit=crop&crop=focalpoint&fp-x=.45&fp-y=.65&fp-z=1.15&auto=format);
-    }
-    .begin-adventure {
-        width: 95px;
-        height: 20%;
-        top: 51%;
-        left: 50.5%;
-        overflow: unset;
-        white-space: unset;
-        font-size: 0.9em;
-    }
-    .begin-adventure::after {
-        content: ' Ye Adventure!';
-    }
-    .thy-name-border {
-        top: 26.5%;
-    }
-    .error, .neutral, .success {
-        max-width: 75%;
-    }
-}
-
-@media (min-height: 433px) and (orientation: landscape) {
-    .container {
-        background-image: url(https://images.unsplash.com/photo-1548445929-4f60a497f851?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=1280&h=720&fit=crop&crop=focalpoint&fp-x=.45&fp-y=.65&fp-z=1.15&auto=format);
-    }
-    .thy-name-border {
-        top: 22%;
-    }
-    .begin-adventure {
-        width: 155px;
-        font-size: 1.5em;
-    }
-}
-
-@media (min-height: 721px) and (orientation: landscape) {
-    .container {
-        background-image: url(https://images.unsplash.com/photo-1548445929-4f60a497f851?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=1600&h=900&fit=crop&crop=focalpoint&fp-x=.45&fp-y=.65&fp-z=1.15&auto=format);
-    }
-    .begin-adventure {
-        width: 195px;
-        height: 23%;
-        font-size: 1.8em;
-    }
-    .title {
-        max-width: 50%;
-        font-size: 2em;
-        padding-bottom: 8px;
-    }
-    .neutral, .error, .success {
-        font-size: 2em;
-    }
-}
-
-@media (min-height: 800px) and (orientation: landscape) {
-    .begin-adventure {
-        height: 20%;
-    }
-}
-
-@media (min-height: 980px) and (orientation: landscape) {
-    .begin-adventure {
-        height: 15%;
-    }
-    .title {
-        top: 10%;
-    }
+.rotate-screen {
+    background-color: black;
+    color: white;
+    margin: 0;
+    padding: 0 5px;
+    font-size: 3em;
+    text-align: center;
+    width: calc(100% - 10px);
+    position: absolute;
+    top: 50%;
+    transform: translate(0, -50%);
 }

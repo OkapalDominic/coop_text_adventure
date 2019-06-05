@@ -68,3 +68,34 @@ Row to contain column
 .hints {
 	width: 100%;
 }
+
+.list {
+	background-color: rgba(46, 109, 138, 0.445);
+	border-radius: 5px;
+	margin-bottom: 5px;
+	padding: 2px;
+}
+.list-title {
+	margin: 0;
+	text-align: center;
+	text-decoration: underline;
+	font-weight: bold;
+}
+
+.rotate-container {
+    width: 100vw;
+    height: 100vh;
+    background-color: black;
+}
+.rotate-screen {
+    background-color: black;
+    color: white;
+    margin: 0;
+    padding: 0 5px;
+    font-size: 3em;
+    text-align: center;
+    width: calc(100% - 10px);
+    position: absolute;
+    top: 50%;
+    transform: translate(0, -50%);
+}
