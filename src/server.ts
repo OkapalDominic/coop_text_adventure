@@ -80,7 +80,7 @@ export class AdventureServer {
 				if (this.players.addPlayer(p) === true) {
 					this.emit(p, 'login', {
 						s: 'success',
-						d: 'Thou Hast Chosen Goodly!',
+						d: p.getDescription(),
 					});
 					this.emit(p, 'infoDungeon', {
 						s: 'dungeons',
