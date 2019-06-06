@@ -76,15 +76,15 @@ class LoginPage extends React.Component<Props, State> {
                 <button type="button" onClick={this.props.fullScreen} className={styles.fullscreen}>Toggle Fullscreen</button>
                 <h1 className={styles.title}>Choose Thy Adventerous Name</h1>
                 <p className={styles[msgClass]}>{msg}</p>
-                <div className={styles['thy-name-border']}>
-                    <input
-                        className={styles['thy-name']}
-                        type="text"
-                        placeholder="Thy Adventerous Name..."
-                        onChange={this.updateUsername}
-                    ></input>
-                </div>
                 <form className={styles.form} onSubmit={this.handleBegin}>
+                    <div className={styles['thy-name-border']}>
+                        <input
+                            className={styles['thy-name']}
+                            type="text"
+                            placeholder="Thy Adventerous Name..."
+                            onChange={this.updateUsername}
+                        ></input>
+                    </div>
                     <button
                         className={styles['begin-adventure']}
                         type="submit"
