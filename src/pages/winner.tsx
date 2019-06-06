@@ -6,6 +6,7 @@ type Props = {
     onClick: (event: React.FormEvent) => void,
     width: number,
     height: number,
+    fullScreen: () => void,
 };
 
 type State = {
@@ -36,6 +37,7 @@ export default class WinnerPage extends React.Component<Props, State> {
                 <form className={styles.form} onSubmit={this.props.onClick}>
                     <button className={styles['win-btn']} type="submit" onClick={this.props.onClick}>Leave Dungeon</button>
                 </form>
+                <button type="button" onClick={this.props.fullScreen}>Toggle fullScreen</button>
             </div>
         );
     }

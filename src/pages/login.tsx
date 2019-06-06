@@ -9,6 +9,7 @@ type Props = {
     message: string,
     width: number;
     height: number;
+    fullScreen: () => void,
 };
 
 interface State {
@@ -72,20 +73,18 @@ class LoginPage extends React.Component<Props, State> {
                 className={styles.container}
                 style={{ backgroundImage: `url(${bkgndImage}${size}&fit=crop&auto=format)` }}
             >
+                <button type="button" onClick={this.props.fullScreen} className={styles.fullscreen}>Toggle Fullscreen</button>
+                <h1 className={styles.title}>Choose Thy Adventerous Name</h1>
+                <p className={styles[msgClass]}>{msg}</p>
+                <div className={styles['thy-name-border']}>
+                    <input
+                        className={styles['thy-name']}
+                        type="text"
+                        placeholder="Thy Adventerous Name..."
+                        onChange={this.updateUsername}
+                    ></input>
+                </div>
                 <form className={styles.form} onSubmit={this.handleBegin}>
-                    <h1 className={styles.title}>Choose Thy Adventerous Name</h1>
-                    <br />
-                    <div className={styles['thy-name-border']}>
-                        <input
-                            className={styles['thy-name']}
-                            type="text"
-                            placeholder="Thy Adventerous Name..."
-                            onChange={this.updateUsername}
-                        ></input>
-                    </div>
-                    <br />
-                    <p className={styles[msgClass]}>{msg}</p>
-                    <br />
                     <button
                         className={styles['begin-adventure']}
                         type="submit"

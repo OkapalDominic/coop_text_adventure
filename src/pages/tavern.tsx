@@ -9,6 +9,7 @@ type Props = {
     id: string,
     width: number,
     height: number,
+    fullScreen: () => void,
 };
 
 interface State {
@@ -41,7 +42,7 @@ class LobbyPage extends React.Component<Props, State> {
     }
 
     componentDidUpdate() {
-        if (window.innerWidth >= window.innerHeight) {
+        if (this.props.width >= this.props.height) {
             this.scroller.scrollIntoView({ behavior: "smooth" });
         }
     }
@@ -70,6 +71,7 @@ class LobbyPage extends React.Component<Props, State> {
         }
         return (
             <div className={styles.container}>
+                <button type="button" onClick={this.props.fullScreen} className={styles.fullscreen}>Toggle Fullscreen</button>
                 <h1 className={styles.title}>The Stinking Dragon Welp</h1>
                 <div className={styles.row}>
                     <div className={styles.dialog}>

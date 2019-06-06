@@ -112,13 +112,24 @@ type ListProps = {
 	dataStrArray: string[],
 	dataString: string,
 	emptyList: string,
+	addToCommand: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void,
 }
 function ListTemplate(props: ListProps) {
 	let listElement: JSX.Element[] = [];
 	if (props.dataStrArray !== undefined) {
 		listElement = props.dataStrArray.reduce((result: JSX.Element[], element, index): JSX.Element[] => {
-			if(element !== '') {
-				result.push(<li key={index}>{element}</li>);
+			if (element !== '') {
+				result.push(
+					<li>
+						<button
+							key={index}
+							type="button"
+							value={element}
+							className={styles['list-btn']}
+							onClick={props.addToCommand}
+						>{element}</button>
+					</li>
+				);
 			}
 			return result;
 		}, []);
@@ -151,6 +162,7 @@ type Props = {
 	width: number,
 	height: number,
 	onLeave: () => void,
+	fullScreen: () => void,
 };
 
 interface State {
@@ -175,11 +187,18 @@ class GamePage extends React.Component<Props, State> {
 		this.handleCmdClick = this.handleCmdClick.bind(this);
 		this.handleCmdChange = this.handleCmdChange.bind(this);
 		this.handleHintClick = this.handleHintClick.bind(this);
+		this.handleAddToCommand = this.handleAddToCommand.bind(this);
 	}
-	
+
 	handleHintClick(event: React.MouseEvent<HTMLButtonElement, MouseEvent>): void {
 		this.setState({
 			command: event.currentTarget.value,
+		});
+	}
+
+	handleAddToCommand(event: React.MouseEvent<HTMLButtonElement, MouseEvent>): void {
+		this.setState({
+			command: this.state.command + event.currentTarget.value,
 		});
 	}
 
@@ -192,10 +211,10 @@ class GamePage extends React.Component<Props, State> {
 	handleCmdClick(event: React.FormEvent): void {
 		event.preventDefault();
 		this.props.socket.emit('sendCommand', { s: this.props.socket.id, d: this.state.command });
-		if(this.state.command.split(' ')[0] === 'leave') {
+		if (this.state.command.split(' ')[0] === 'leave') {
 			this.props.onLeave();
 		}
-		if(this.state.command.split(' ')[0] === 'enter') {
+		if (this.state.command.split(' ')[0] === 'enter') {
 			this.imgIndex = Math.floor(Math.random() * this.state.backgrounds.length);
 		}
 		this.setState({
@@ -205,14 +224,14 @@ class GamePage extends React.Component<Props, State> {
 
 	render() {
 		if (this.props.width < this.props.height) {
-            return (
-                <div className="rotate-container">
-                    <p className="rotate-screen">Please rotate your screen to play this game.</p>
-                </div>
-            );
-        }
+			return (
+				<div className="rotate-container">
+					<p className="rotate-screen">Please rotate your screen to play this game.</p>
+				</div>
+			);
+		}
 		let bkgndImage: string = this.state.backgrounds[this.imgIndex];
-		let size: string = '&w=' + window.innerWidth + '&h=' + window.innerHeight;
+		let size: string = '&w=' + this.props.width + '&h=' + this.props.height;
 		return (
 			<div
 				className={styles['row']}
@@ -234,6 +253,7 @@ class GamePage extends React.Component<Props, State> {
 						dataStrArray={this.props.hints}
 						onClick={this.handleHintClick}
 					/>
+					<button type="button" onClick={this.props.fullScreen}>Toggle Fullscreen</button>
 				</div>
 				<div className={styles['side-bar']}>
 					<ScrollArea autoScroll={false} data={[
@@ -242,24 +262,28 @@ class GamePage extends React.Component<Props, State> {
 							dataString={'Players in Dungeon'}
 							dataStrArray={this.props.players}
 							emptyList="No one is here, not even you."
+							addToCommand={this.handleAddToCommand}
 						/>,
 						<ListTemplate
 							key="inv"
 							dataString={'Inventory'}
 							dataStrArray={this.props.inventory}
 							emptyList="You have nothing, not even pants."
+							addToCommand={this.handleAddToCommand}
 						/>,
 						<ListTemplate
 							key="items"
 							dataString={'Current Room'}
 							dataStrArray={this.props.items}
 							emptyList="The room appears empty."
+							addToCommand={this.handleAddToCommand}
 						/>,
 						<ListTemplate
 							key="rooms"
 							dataString={'Connected Rooms'}
 							dataStrArray={this.props.rooms}
 							emptyList="There are no exits."
+							addToCommand={this.handleAddToCommand}
 						/>
 					]} />
 				</div>

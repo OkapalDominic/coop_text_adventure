@@ -41,6 +41,7 @@ interface State {
     loginMsg: string; // S, N, or E for success, neutral, error
     width: number; // width of the window
     height: number; // height of the window
+    fullscreen: boolean // If fullscreen or not
 }
 
 export class MainPage extends React.Component<Props, State> {
@@ -64,13 +65,15 @@ export class MainPage extends React.Component<Props, State> {
             cmd: '',
             currentPage: 'NONE',
             loginMsg: 'N',
-            width: window.innerWidth,
-            height: window.innerHeight,
+            width: document.documentElement.clientWidth,
+            height: document.documentElement.clientHeight,
+            fullscreen: false,
         }
 
         this.handleWinButton = this.handleWinButton.bind(this);
         this.handleLeaveDungeon = this.handleLeaveDungeon.bind(this);
         this.updateDimensions = this.updateDimensions.bind(this);
+        this.fullscreen = this.fullscreen.bind(this);
         this.socket = openSocket('http://localhost:7777');
         this.listen();
     }
@@ -85,10 +88,20 @@ export class MainPage extends React.Component<Props, State> {
 
     updateDimensions() {
         this.setState({
-            width: window.innerWidth,
-            height: window.innerHeight,
+            width: document.documentElement.clientWidth,
+            height: document.documentElement.clientHeight,
         });
     }
+
+    fullscreen(): void {
+        console.log(document.fullscreenElement);
+        if(document.fullscreenElement === null) {
+            document.body.requestFullscreen();
+        } else {
+            document.exitFullscreen();
+        }
+        this.updateDimensions();
+      }
 
     // -------------------------------------------
     // listens for and handles all server responses
@@ -247,6 +260,7 @@ export class MainPage extends React.Component<Props, State> {
                     message={this.state.loginMsg}
                     width={this.state.width}
                     height={this.state.height}
+                    fullScreen={this.fullscreen}
                 />);
             case 'LOBBY':
                 return (<LobbyPage
@@ -256,6 +270,7 @@ export class MainPage extends React.Component<Props, State> {
                     socket={this.socket}
                     width={this.state.width}
                     height={this.state.height}
+                    fullScreen={this.fullscreen}
                 />);
             case 'GAME':
                 return (<GamePage
@@ -269,6 +284,7 @@ export class MainPage extends React.Component<Props, State> {
                     width={this.state.width}
                     height={this.state.height}
                     onLeave={this.handleLeaveDungeon}
+                    fullScreen={this.fullscreen}
                 />);
             case 'WINNER':
                 return (<WinnerPage
@@ -276,6 +292,7 @@ export class MainPage extends React.Component<Props, State> {
                     onClick={this.handleWinButton}
                     width={this.state.width}
                     height={this.state.height}
+                    fullScreen={this.fullscreen}
                 />);
             default:
                 return <ErrorPage />;
