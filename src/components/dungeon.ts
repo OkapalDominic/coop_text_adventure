@@ -54,6 +54,12 @@ export class Dungeon extends Entity {
 		return this.players.hasPlayer(s);
 	}
 	removePlayer(s: string): void {
+		if (this.players.hasPlayer(s) === true) {
+			this.sendMessageAll('sendCommand', {
+				s: this.players.getPlayer(s).getDescription(),
+				d: `Has left the dungeon"`,
+			});
+		}
 		this.players.removePlayer(s);
 	}
 	
