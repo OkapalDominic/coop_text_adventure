@@ -1,53 +1,61 @@
 html, body {
     background-color: #0e0904;
-    min-width: 460px;
-    ;
+}
+
+.fullscreen {
+    position: absolute;
+    top: 0;
+    right: 0;
 }
 
 .container {
-    background-image: url(https://images.unsplash.com/photo-1548445929-4f60a497f851?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=480&h=270&fit=crop&crop=focalpoint&fp-x=.45&fp-y=.65&fp-z=1.15&auto=format);
-    background-repeat: no-repeat;
-    background-position: center;
     background-color: #0e0904;
-    position: absolute;
+    display: flex;
+    flex-direction: column;
     width: 100%;
-    min-width: 460px;
-    height: 100%;
-    min-height: 270px;
+    height: 100vh;
     margin: 0;
     padding: 0;
-}
-
-.form {
-    width: 100%;
+    text-align: center;
 }
 
 .title {
-    position: absolute;
-    top: 5%;
-    left: 50%;
-    font-size: 1.5em;
-    width: 90%;
-    transform: translate(-50%, -50%);
+    font-size: 2em;
     background-color: rgba(170, 170, 170, 0.61);
     border: 3px dashed #332618;
     border-radius: 20px;
     padding: 0 10px 5px 10px;
     text-decoration: underline;
-    display: inline-block;
+}
+
+.error, .neutral, .success {
+    background-color: rgba(0, 0, 0, 0.685);
+    font-size: 1.5em;
+    font-weight: bolder;
+    border-radius: 10px;
+    padding: 0 3px 3px;
+    margin: 0;
+    transition: color 1s ease-out;
+}
+
+.error {
+    color: #da1515;
+}
+
+.neutral {
+    color: white;
+}
+
+.success {
+    color: #15da15;
 }
 
 .thy-name-border {
-    position: absolute;
-    top: 30%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    margin: 0 auto;
+    margin: 10px auto 0 auto;
     padding: 3px;
     border: 2px dashed rgb(171, 173, 151);
     border-radius: 10px;
     background-color: rgb(104, 61, 14);
-    display: inline-block;
 }
 
 .thy-name-border input {
@@ -67,145 +75,27 @@ html, body {
     color: #a5a0a0;
 }
 
-.error, .neutral, .success {
-    position: absolute;
-    top: 80%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    display: inline-block;
-    background-color: rgba(0, 0, 0, 0.685);
-    font-size: 1.5em;
-    font-weight: bolder;
-    border-radius: 10px;
-    padding: 0 3px 3px;
-    margin-top: 10px;
-    width: 90%;
-    transition: color 1s ease-out;
-}
-
-.error {
-    color: #da1515;
-}
-
-.neutral {
-    color: white;
-}
-
-.success {
-    color: #15da15;
-}
-
-button {
-    cursor: pointer;
+.form {
+    margin: 0 auto;
+    padding: 0;
 }
 
 .begin-adventure {
-    position: absolute;
-    top: 50%;
-    left: 50.5%;
-    transform: translate(-50%, -50%);
-    margin-top: 1%;
-    padding: 0;
-    border: none;
-    border-radius: 40%;
-    width: 60px;
-    height: 23%;
-    background-image: radial-gradient(#bbbb22, #333 68%);
+    margin-top: calc(55vh - 30px - 6em);
+    padding: 8px;
+    border: 3px solid white;
+    border-radius: 20px;
     font-size: 1.3em;
     font-weight: bold;
     overflow: hidden;
     white-space: nowrap;
-    color: black;
+    color: white;
+    background-color: black;
     cursor: pointer;
 }
 
-.begin-adventure:hover {
-    background-image: radial-gradient(#ffff22, #fff 90%);
-}
-
-.begin-adventure:active {
-    background-image: radial-gradient(#bbbb22, #aa1616 75%);
-}
-
-@media all and (orientation: portrait) {
-    html {
-        transform: rotate(90deg);
-        transform-origin: left top;
-        width: 100vh;
-        overflow-x: hidden;
-        position: absolute;
-        top: 0;
-        left: 100%;
-    }
-}
-
-@media (min-height: 271px) and (orientation: landscape) {
-    .container {
-        background-image: url(https://images.unsplash.com/photo-1548445929-4f60a497f851?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=768&h=432&fit=crop&crop=focalpoint&fp-x=.45&fp-y=.65&fp-z=1.15&auto=format);
-    }
-    .begin-adventure {
-        width: 95px;
-        height: 20%;
-        top: 51%;
-        left: 50.5%;
-        overflow: unset;
-        white-space: unset;
-        font-size: 0.9em;
-    }
-    .begin-adventure::after {
-        content: ' Ye Adventure!';
-    }
-    .thy-name-border {
-        top: 26.5%;
-    }
-    .error, .neutral, .success {
-        max-width: 75%;
-    }
-}
-
-@media (min-height: 433px) and (orientation: landscape) {
-    .container {
-        background-image: url(https://images.unsplash.com/photo-1548445929-4f60a497f851?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=1280&h=720&fit=crop&crop=focalpoint&fp-x=.45&fp-y=.65&fp-z=1.15&auto=format);
-    }
-    .thy-name-border {
-        top: 22%;
-    }
-    .begin-adventure {
-        width: 155px;
-        font-size: 1.5em;
-    }
-}
-
-@media (min-height: 721px) and (orientation: landscape) {
-    .container {
-        background-image: url(https://images.unsplash.com/photo-1548445929-4f60a497f851?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=1600&h=900&fit=crop&crop=focalpoint&fp-x=.45&fp-y=.65&fp-z=1.15&auto=format);
-    }
-    .begin-adventure {
-        width: 195px;
-        height: 23%;
-        font-size: 1.8em;
-    }
-    .title {
-        max-width: 50%;
-        font-size: 2em;
-        padding-bottom: 8px;
-    }
-    .neutral, .error, .success {
-        font-size: 2em;
-    }
-}
-
-@media (min-height: 800px) and (orientation: landscape) {
-    .begin-adventure {
-        height: 20%;
-    }
-}
-
-@media (min-height: 980px) and (orientation: landscape) {
-    .begin-adventure {
-        height: 15%;
-    }
-    .title {
-        top: 10%;
-    }
+.begin-adventure:hover, .begin-adventure:active {
+    color: black;
+    background-color: white;
+    border-color: black;
 }

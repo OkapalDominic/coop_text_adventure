@@ -1,30 +1,78 @@
-/*This css kind of sucks wish for bootstrap...*/
+.scrollArea {
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 0;
+    height: 100%;
+    text-align: left;
+}
 
-/*
-Row to contain column
-*/
 .row {
 	background-color: rgb(94, 109, 104);
 	display: flex;
+	justify-content: space-around;
+	max-height: 100vh;
+	padding: 10px;
 }
 
-/*
-Column auto adjusts width
-*/
-.column {
-	background-color:rgb(233, 220, 146);
-	flex: auto;
-	height: 100%;
-	margin: 10px;
+.main-content, .side-bar {
+	background-color:rgba(233, 220, 146, 0.61);
+	padding: 5px;
+	height: calc(100vh - 30px);
+}
+.main-content {
+	width: 75%;
+	margin-right: 10px;
+}
+.side-bar {
+	width: 25%;
+	text-align: center;
 }
 
-div.column div.row {
-	border: 5px solid black;
+.history {
+	border: 3px solid black;
+	padding: 5px;
+	background-color: rgba(255, 240, 193, 0.712);
+	height: 70%;
+}
+
+.commands {
+	margin-top: 5px;
+	display: block;
+}
+.commands form {
+	display: flex;
+}
+.commands input, .commands button {
+	border: 3px solid #3ca039;
+}
+.commands input {
+	border-radius: 5px 0 0 5px;
+	border-right: none;
+	font-size: 1.2em;
+	flex-grow: 7;
+	margin: 0;
+	padding: 0;
+}
+.commands button {
+	background-image: linear-gradient(#c9aa43, #ad9a2b);
+	flex-grow: 1;
+	border-radius: 0 5px 5px 0;
+	border-left: none;
+}
+
+.hints {
+	width: 100%;
+}
+
+.list {
+	background-color: rgba(46, 109, 138, 0.445);
 	border-radius: 5px;
+	margin-bottom: 5px;
+	padding: 2px;
 }
-
-textarea {
-	width: 90%;
-	height: 100%;
-	min-height:11rem;
+.list-title {
+	margin: 0;
+	text-align: center;
+	text-decoration: underline;
+	font-weight: bold;
 }
