@@ -9,11 +9,6 @@ type ScrollAreaProps = {
 	data: any[];
 	autoScroll: boolean;
 }
-interface DataProp {
-	dataStrArray?: string[];
-	dataString?: string;
-	emptyList?: string;
-}
 
 class ScrollArea extends React.Component<ScrollAreaProps> {
 	private scroller: any;
@@ -49,14 +44,11 @@ type CommandProps = {
 	dataString: string,
 	onClick: (event: React.FormEvent) => void,
 	onChange: (event: React.ChangeEvent<HTMLInputElement>) => void,
+	command: string,
 }
 type CommandState = {
-	commandText: string,
 }
 class Commands extends React.Component<CommandProps, CommandState> {
-	state: CommandState = {
-		commandText: '',
-	}
 	constructor(props: CommandProps) {
 		super(props);
 
@@ -65,16 +57,10 @@ class Commands extends React.Component<CommandProps, CommandState> {
 	}
 
 	handleOnChange(event: React.ChangeEvent<HTMLInputElement>) {
-		this.setState({
-			commandText: event.target.value,
-		});
 		this.props.onChange(event);
 	}
 	handleOnSubmit(event: React.FormEvent) {
 		event.preventDefault();
-		this.setState({
-			commandText: '',
-		});
 		this.props.onClick(event);
 	}
 	render() {
@@ -85,7 +71,7 @@ class Commands extends React.Component<CommandProps, CommandState> {
 						type='text'
 						placeholder={this.props.dataString}
 						onChange={this.handleOnChange}
-						value={this.state.commandText}
+						value={this.props.command}
 					/>
 					<button
 						type='submit'
@@ -97,13 +83,17 @@ class Commands extends React.Component<CommandProps, CommandState> {
 	}
 }
 
-function HintsArea(props: DataProp) {
+type HintsProps = {
+	dataStrArray: string[],
+	onClick: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void,
+}
+function HintsArea(props: HintsProps) {
 	let hintElement: JSX.Element[] = [];
 	if (props.dataStrArray !== undefined) {
 		// currently slice so only 10 hints max
 		props.dataStrArray.slice(0, 10).forEach((e, i) => {
 			if (e.length > 0) {
-				hintElement.push(<button key={i}>{e}</button>);
+				hintElement.push(<button key={i} onClick={props.onClick} value={e}>{e}</button>);
 			}
 		});
 	}
@@ -118,7 +108,12 @@ function HintsArea(props: DataProp) {
 	}
 }
 
-function ListTemplate(props: DataProp) {
+type ListProps = {
+	dataStrArray: string[],
+	dataString: string,
+	emptyList: string,
+}
+function ListTemplate(props: ListProps) {
 	let listElement: JSX.Element[] = [];
 	if (props.dataStrArray !== undefined) {
 		listElement = props.dataStrArray.reduce((result: JSX.Element[], element, index): JSX.Element[] => {
@@ -153,81 +148,92 @@ type Props = {
 	rooms: string[],
 	items: string[],
 	socket: SocketIOClient.Socket,
+	width: number,
+	height: number,
+	onLeave: () => void,
 };
 
 interface State {
 	backgrounds: string[];
-	width: number;
-	height: number;
+	command: string;
 }
 class GamePage extends React.Component<Props, State> {
-	private command: string = '';
+	private imgIndex: number = 0;
+
+	state: State = {
+		backgrounds: [
+			'https://images.unsplash.com/photo-1542617454-e7d68f9d5626?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9',
+			'https://images.unsplash.com/photo-1548368295-b7158d905383?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9',
+			'https://images.unsplash.com/photo-1545263467-4e257e3b5ce7?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9',
+			'https://images.unsplash.com/photo-1508404768051-0809ca78340f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9'
+		],
+		command: '',
+	};
 
 	constructor(props: Props) {
 		super(props);
-		this.state = {
-			backgrounds: [
-				'https://images.unsplash.com/photo-1542617454-e7d68f9d5626?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9',
-				'https://images.unsplash.com/photo-1548368295-b7158d905383?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9',
-				'https://images.unsplash.com/photo-1545263467-4e257e3b5ce7?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9',
-				'https://images.unsplash.com/photo-1508404768051-0809ca78340f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9'
-			],
-			width: window.innerWidth,
-			height: window.innerHeight,
-		};
 		this.handleCmdClick = this.handleCmdClick.bind(this);
 		this.handleCmdChange = this.handleCmdChange.bind(this);
-		this.updateDimensions = this.updateDimensions.bind(this);
+		this.handleHintClick = this.handleHintClick.bind(this);
+	}
+	
+	handleHintClick(event: React.MouseEvent<HTMLButtonElement, MouseEvent>): void {
+		this.setState({
+			command: event.currentTarget.value,
+		});
 	}
 
 	handleCmdChange(event: React.ChangeEvent<HTMLInputElement>): void {
-		this.command = event.target.value;
+		this.setState({
+			command: event.target.value,
+		});
 	}
 
 	handleCmdClick(event: React.FormEvent): void {
 		event.preventDefault();
-		this.props.socket.emit('sendCommand', { s: this.props.socket.id, d: this.command });
-	}
-
-	updateDimensions() {
+		this.props.socket.emit('sendCommand', { s: this.props.socket.id, d: this.state.command });
+		if(this.state.command.split(' ')[0] === 'leave') {
+			this.props.onLeave();
+		}
+		if(this.state.command.split(' ')[0] === 'enter') {
+			this.imgIndex = Math.floor(Math.random() * this.state.backgrounds.length);
+		}
 		this.setState({
-			width: window.innerWidth,
-			height: window.innerHeight,
+			command: '',
 		});
 	}
 
-	componentDidMount() {
-		window.addEventListener("resize", this.updateDimensions);
-	}
-
-	componentWillUnmount() {
-		window.removeEventListener("resize", this.updateDimensions);
-	}
-
 	render() {
-		let bkgndImage: string = this.state.backgrounds[Math.floor(Math.random() * this.state.backgrounds.length)];
+		if (this.props.width < this.props.height) {
+            return (
+                <div className="rotate-container">
+                    <p className="rotate-screen">Please rotate your screen to play this game.</p>
+                </div>
+            );
+        }
+		let bkgndImage: string = this.state.backgrounds[this.imgIndex];
 		let size: string = '&w=' + window.innerWidth + '&h=' + window.innerHeight;
-		if (this.state.width < this.state.height) {
-			return (
-				<div className={styles['rotate-container']}>
-					<p className={styles['rotate-screen']}>Please rotate your screen to play this game.</p>
-				</div>
-			);
-		}
 		return (
 			<div
 				className={styles['row']}
 				style={{ backgroundImage: `url(${bkgndImage}${size}&fit=crop&auto=format)` }}
 			>
 				<div className={styles['main-content']}>
-					<History dataElementArray={this.props.messages} />
+					<History
+						dataElementArray={this.props.messages}
+					/>
 
 					<Commands
 						dataString="Command Thyself..."
 						onClick={this.handleCmdClick}
-						onChange={this.handleCmdChange} />
+						onChange={this.handleCmdChange}
+						command={this.state.command}
+					/>
 
-					<HintsArea dataStrArray={this.props.hints} />
+					<HintsArea
+						dataStrArray={this.props.hints}
+						onClick={this.handleHintClick}
+					/>
 				</div>
 				<div className={styles['side-bar']}>
 					<ScrollArea autoScroll={false} data={[

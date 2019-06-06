@@ -38,7 +38,9 @@ interface State {
     currentDungeon: string; // dungeon currently in
     cmd: string; // cmd to send to server
     currentPage: PAGE; // What page to display
-    loginMsg: string;
+    loginMsg: string; // S, N, or E for success, neutral, error
+    width: number; // width of the window
+    height: number; // height of the window
 }
 
 export class MainPage extends React.Component<Props, State> {
@@ -51,7 +53,7 @@ export class MainPage extends React.Component<Props, State> {
         this.state = {
             dungeons: [],
             players: [],
-            hints: [],
+            hints: ['chat ', 'enter ', 'pickup ', 'drop ', 'use ', 'leave'],
             inventory: [],
             items: [],
             connectedAreas: [],
@@ -62,11 +64,30 @@ export class MainPage extends React.Component<Props, State> {
             cmd: '',
             currentPage: 'NONE',
             loginMsg: 'N',
+            width: window.innerWidth,
+            height: window.innerHeight,
         }
 
         this.handleWinButton = this.handleWinButton.bind(this);
+        this.handleLeaveDungeon = this.handleLeaveDungeon.bind(this);
+        this.updateDimensions = this.updateDimensions.bind(this);
         this.socket = openSocket('http://localhost:7777');
         this.listen();
+    }
+    
+    componentDidMount() {
+        window.addEventListener("resize", this.updateDimensions);
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener("resize", this.updateDimensions);
+    }
+
+    updateDimensions() {
+        this.setState({
+            width: window.innerWidth,
+            height: window.innerHeight,
+        });
     }
 
     // -------------------------------------------
@@ -130,9 +151,9 @@ export class MainPage extends React.Component<Props, State> {
                     });
                     break;
                 case 'hints':
-                    this.setState({
-                        hints: res.d.split('\n'),
-                    });
+                    // this.setState({
+                    //     hints: res.d.split('\n'),
+                    // });
                     break;
                 case 'items':
                     this.setState({
@@ -193,11 +214,17 @@ export class MainPage extends React.Component<Props, State> {
                 messages: msgs,
                 currentPage: 'WINNER',
             });
-        })
+        });
     }
 
     handleWinButton(event: React.FormEvent): void {
         event.preventDefault();
+        this.setState({
+            currentPage: 'LOBBY',
+        });
+    }
+
+    handleLeaveDungeon(): void {
         this.setState({
             currentPage: 'LOBBY',
         });
@@ -218,6 +245,8 @@ export class MainPage extends React.Component<Props, State> {
                 return (<LoginPage
                     socket={this.socket}
                     message={this.state.loginMsg}
+                    width={this.state.width}
+                    height={this.state.height}
                 />);
             case 'LOBBY':
                 return (<LobbyPage
@@ -225,6 +254,8 @@ export class MainPage extends React.Component<Props, State> {
                     dungeons={this.state.dungeons}
                     id={this.state.id}
                     socket={this.socket}
+                    width={this.state.width}
+                    height={this.state.height}
                 />);
             case 'GAME':
                 return (<GamePage
@@ -235,11 +266,16 @@ export class MainPage extends React.Component<Props, State> {
                     rooms={this.state.connectedAreas}
                     items={this.state.items}
                     socket={this.socket}
+                    width={this.state.width}
+                    height={this.state.height}
+                    onLeave={this.handleLeaveDungeon}
                 />);
             case 'WINNER':
                 return (<WinnerPage
                     username={this.state.username}
                     onClick={this.handleWinButton}
+                    width={this.state.width}
+                    height={this.state.height}
                 />);
             default:
                 return <ErrorPage />;

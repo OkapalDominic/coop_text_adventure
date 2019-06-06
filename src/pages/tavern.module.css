@@ -13,6 +13,7 @@ html, body {
     display: flex;
     flex-direction: column;
     height: 100vh;
+    width: 100vw;
 }
 
 .title {
@@ -26,7 +27,7 @@ html, body {
 .row {
     display: flex;
     width: calc(100vw - 20px);
-    height: calc(100vh - 1.5em - 55px);
+    height: calc(100vh - 1.5em - 65px);
     justify-content: space-evenly;
     margin: 10px;
 }
@@ -34,14 +35,29 @@ html, body {
 .dialog {
     background-color: rgba(171, 173, 151, 55%);
     border-radius: 30px;
-    margin: 0;
+    margin: 0 5px 0 0;
     padding: 10px 10px;
+    flex: 2 1 75%;
 }
 .dungeons {
     background-color: rgba(171, 173, 151, 55%);
     border-radius: 30px;
     margin: 0;
-    padding: 10px 10px;
+    padding: 20px;
+    flex: 1 2 25%;
+}
+.dungeon-btns {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+.dungeon-btn {
+    background-image: linear-gradient(#8d8d8d, #494949, #8b8b8b);
+    border: 3px solid black;
+    border-radius: 10px;
+    color: white;
+    font-size: 1.3em;
+    margin: 6px;
 }
 .scrollArea {
     overflow-y: auto;
@@ -50,24 +66,6 @@ html, body {
     margin: 0;
     height: 100%;
     text-align: left;
-}
-
-.rotate-container {
-    width: 100vw;
-    height: 100vh;
-    background-color: black;
-}
-.rotate-screen {
-    background-color: black;
-    color: white;
-    margin: 0;
-    padding: 0 5px;
-    font-size: 3em;
-    text-align: center;
-    width: calc(100% - 10px);
-    position: absolute;
-    top: 50%;
-    transform: translate(0, -50%);
 }
 
 @media (min-height: 271px) and (orientation: landscape) {

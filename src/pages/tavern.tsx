@@ -7,12 +7,12 @@ type Props = {
     dungeons: string[],
     socket: SocketIOClient.Socket,
     id: string,
+    width: number,
+    height: number,
 };
 
 interface State {
     dialog: JSX.Element[];
-    width: number;
-    height: number;
 }
 
 const TIME_TO_WAIT = 10000;
@@ -23,25 +23,15 @@ class LobbyPage extends React.Component<Props, State> {
     private scroller: any;
     state: State = {
         dialog: [],
-        width: window.innerWidth,
-        height: window.innerHeight,
     }
     constructor(props: Props) {
         super(props);
 
         this.startMsgInterval = this.startMsgInterval.bind(this);
-        this.updateDimensions = this.updateDimensions.bind(this);
         this.myDialog = new TavernDialog(this.props.username);
-    }
-    updateDimensions() {
-        this.setState({
-            width: window.innerWidth,
-            height: window.innerHeight,
-        });
     }
 
     componentDidMount() {
-        window.addEventListener("resize", this.updateDimensions);
         let d: JSX.Element[] = this.state.dialog;
         d.push(this.myDialog.setup());
         this.setState({
@@ -58,7 +48,6 @@ class LobbyPage extends React.Component<Props, State> {
 
     componentWillUnmount(): void {
         window.clearInterval(this.interval);
-        window.removeEventListener("resize", this.updateDimensions);
     }
 
     startMsgInterval(): void {
@@ -72,10 +61,10 @@ class LobbyPage extends React.Component<Props, State> {
     }
 
     render() {
-        if (this.state.width < this.state.height) {
+        if (this.props.width < this.props.height) {
             return (
-                <div className={styles['rotate-container']}>
-                    <p className={styles['rotate-screen']}>Please rotate your screen to play this game.</p>
+                <div className="rotate-container">
+                    <p className="rotate-screen">Please rotate your screen to play this game.</p>
                 </div>
             );
         }
@@ -95,22 +84,25 @@ class LobbyPage extends React.Component<Props, State> {
                     </div>
                     <div className={styles.dungeons}>
                         <div className={styles.scrollArea}>
-                            {this.props.dungeons.map((dungeon) => {
-                                return (
-                                    <button
-                                        key={dungeon}
-                                        type='button'
-                                        onClick={(event) => {
-                                            this.props.socket.emit('joinDungeon', {
-                                                s: this.props.id,
-                                                d: dungeon,
-                                            });
-                                        }}
-                                    >
-                                        {dungeon}
-                                    </button>
-                                );
-                            })}
+                            <div className={styles['dungeon-btns']}>
+                                {this.props.dungeons.map((dungeon) => {
+                                    return (
+                                        <button
+                                            className={styles['dungeon-btn']}
+                                            key={dungeon}
+                                            type='button'
+                                            onClick={(event) => {
+                                                this.props.socket.emit('joinDungeon', {
+                                                    s: this.props.id,
+                                                    d: dungeon,
+                                                });
+                                            }}
+                                        >
+                                            {dungeon}
+                                        </button>
+                                    );
+                                })}
+                            </div>
                             {/* End scrollArea */}
                         </div>
                         {/* End dungeons */}

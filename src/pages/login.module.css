@@ -120,21 +120,3 @@ button {
 .begin-adventure:active {
     background-image: radial-gradient(#bbbb22, #aa1616 75%);
 }
-
-.rotate-container {
-    width: 100vw;
-    height: 100vh;
-    background-color: black;
-}
-.rotate-screen {
-    background-color: black;
-    color: white;
-    margin: 0;
-    padding: 0 5px;
-    font-size: 3em;
-    text-align: center;
-    width: calc(100% - 10px);
-    position: absolute;
-    top: 50%;
-    transform: translate(0, -50%);
-}

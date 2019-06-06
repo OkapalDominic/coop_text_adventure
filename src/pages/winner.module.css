@@ -2,14 +2,33 @@
     display: flex;
     flex-direction: column;
     justify-content: space-around;
+    align-items: center;
     background-color: tan;
     height: 100vh;
 }
 
 .title {
+    width: 100%;
     color: black;
+    text-align: center;
+    background-image: linear-gradient(rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0.534), rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0));
+}
+
+.form {
+    text-align: center;
 }
 
 .win-btn {
-    background-image: linear-gradient(#e79326, #ffebaa, #e79326);
+    background-image: linear-gradient(#f1b15d, #ffebaa, #f1b15d);
+    width: 75%;
+    font-size: 2em;
+    border: 3px solid;
+    border-image-source: linear-gradient(-30deg, #ecca9d, #945d15, #f1e7c3);
+    border-image-slice: 1;
+    border-radius: 10px;
+}
+.win-btn:hover, .win-btn:focus {
+    background-image: linear-gradient(#ffebaa, #f1b15d, #ffebaa);
+    border-image-source: linear-gradient(150deg, #ecca9d, #945d15, #f1e7c3);
+    border-image-slice: 1;
 }
