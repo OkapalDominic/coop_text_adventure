@@ -199,7 +199,7 @@ export class MainPage extends React.Component<Props, State> {
     handleWinButton(event: React.FormEvent): void {
         event.preventDefault();
         this.setState({
-            currentPage: 'LOGIN',
+            currentPage: 'LOBBY',
         });
     }
 
