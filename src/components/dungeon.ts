@@ -233,11 +233,23 @@ export class Dungeon extends Entity {
 			const i = p.getItem(arg);
 			console.log(`Used item "${arg}"`);
 			i.onUse();
-			this.sendMessageRoom(p, 'sendCommand', {
-				s: p.getDescription(),
-				d: `Used item "${arg}"`,
-			});
-			this.sendInventory(p);	
+			if (i.getName() === 'Apple' && p.getCurrentArea().getName() === 'StartRoom') {
+				this.sendMessage(p, 'winner', {
+					s: 'You Have Won',
+					d: 'By eating an Apple in the StartRoom',
+				});
+				p.exitDungeon();
+				this.sendMessageAll('sendCommand', {
+					s: p.getDescription(),
+					d: 'Is a true winner! What is taking you so long?'
+				});
+			} else {
+				this.sendMessageRoom(p, 'sendCommand', {
+					s: p.getDescription(),
+					d: `Used item "${arg}"`,
+				});
+				this.sendInventory(p);
+			}
 		} else {
 			console.log(`Unable to find item "${arg}" to use...`);
 			this.sendMessage(p, 'sendCommand', {
