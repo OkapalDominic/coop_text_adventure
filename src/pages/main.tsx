@@ -74,7 +74,7 @@ export class MainPage extends React.Component<Props, State> {
         this.handleLeaveDungeon = this.handleLeaveDungeon.bind(this);
         this.updateDimensions = this.updateDimensions.bind(this);
         this.fullscreen = this.fullscreen.bind(this);
-        this.socket = openSocket('http://localhost:7777');
+        this.socket = openSocket('https://text-adventure-dw-server.herokuapp.com');
         this.listen();
     }
     
