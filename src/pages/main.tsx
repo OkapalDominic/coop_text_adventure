@@ -5,13 +5,14 @@ import LoginPage from './login';
 import LobbyPage from './tavern';
 import GamePage from './game';
 import ErrorPage from './error';
+import WinnerPage from './winner';
 
 type Props = {};
 
 // -------------------------------------------
 // type used for pages available
 // -------------------------------------------
-type PAGE = 'NONE' | 'LOGIN' | 'LOBBY' | 'GAME';
+type PAGE = 'NONE' | 'LOGIN' | 'LOBBY' | 'GAME' | 'WINNER';
 
 // -------------------------------------------
 // message interface for communication with server
@@ -63,6 +64,7 @@ export class MainPage extends React.Component<Props, State> {
             loginMsg: 'N',
         }
 
+        this.handleWinButton = this.handleWinButton.bind(this);
         this.socket = openSocket('http://localhost:7777');
         this.listen();
     }
@@ -181,6 +183,24 @@ export class MainPage extends React.Component<Props, State> {
                 messages: msgs,
             });
         });
+
+        this.socket.on('winner', (res: DumpProp) => {
+            this.logIt('winner', res);
+            let msg: JSX.Element = <div key={this.state.messages.length}>{res.s} {res.d}</div>;
+            let msgs: JSX.Element[] = this.state.messages;
+            msgs.push(msg);
+            this.setState({
+                messages: msgs,
+                currentPage: 'WINNER',
+            });
+        })
+    }
+
+    handleWinButton(event: React.FormEvent): void {
+        event.preventDefault();
+        this.setState({
+            currentPage: 'LOGIN',
+        });
     }
 
     logIt(on: string, res: DumpProp) {
@@ -215,6 +235,11 @@ export class MainPage extends React.Component<Props, State> {
                     rooms={this.state.connectedAreas}
                     items={this.state.items}
                     socket={this.socket}
+                />);
+            case 'WINNER':
+                return (<WinnerPage
+                    username={this.state.username}
+                    onClick={this.handleWinButton}
                 />);
             default:
                 return <ErrorPage />;

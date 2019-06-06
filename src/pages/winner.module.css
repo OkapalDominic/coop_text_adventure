@@ -1,0 +1,15 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    background-color: tan;
+    height: 100vh;
+}
+
+.title {
+    color: black;
+}
+
+.win-btn {
+    background-image: linear-gradient(#e79326, #ffebaa, #e79326);
+}
