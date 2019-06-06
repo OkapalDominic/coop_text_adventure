@@ -163,9 +163,14 @@ export class AdventureServer {
 			// -------------------------------------------
 			socket.on('disconnect', () => {
 				console.log('server socket disconnect');
-				/*if (player) {
-					console.log('player disconnected');
-				}*/
+				if (this.players.hasPlayer(socket.id)) {
+					let p = this.players.getPlayer(socket.id);
+					if (p.currentDungeon() !== undefined) {
+						p.exitDungeon();
+					}
+					this.players.removePlayer(socket.id);
+					console.log('player removed');
+				}
 			});
 		});
 	}
