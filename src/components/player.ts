@@ -5,6 +5,11 @@ import {Dungeon} from './dungeon';
 import {Area} from './area';
 import {Item, ItemList} from './item';
 
+interface DumpProp {
+	s: string;
+	d: string;
+}
+
 // ----------------------------------
 // manages details about Player
 // note:
@@ -38,6 +43,10 @@ export class Player extends Entity {
 	// ----------------------------------
 	getSocket(): Socket {
 		return this.socket;
+	}
+	
+	sendMessage(s: string, dp: DumpProp): void {
+		this.getSocket().emit(s, dp);
 	}
 	
 	// ----------------------------------
@@ -91,6 +100,9 @@ export class Player extends Entity {
 	hasItem(s: string): boolean {
 		return this.items.hasItem(s);
 	}
+	getItem(s: string): Item {
+		return this.items.getItem(s);
+	}
 	getItemNames(): string[] {
 		return this.items.getItemNames();
 	}
@@ -109,16 +121,30 @@ export class PlayerList {
 		this.players = [];
 	}
 	
+	getRawArray(): Player[] {
+		return this.players;
+	}
+	
 	// ----------------------------------
 	// modify PlayerList
 	// ----------------------------------
 	addPlayer(p: Player): boolean {
-		if (this.hasPlayer(p.getName()) === false) {
+		let names = this.getPlayerDescriptions();
+		let tst = names.some((n) => {
+			return p.getDescription() === n;
+		});
+		
+		if (tst === true) {
+			console.log(`This collection already has player with description "${p.getDescription()}"`);
+			return false;
+		} else if (this.hasPlayer(p.getName()) === false) {
 			this.players.push(p);
 			return true;
+		} else {
+			let i = Entity.indexEntity(p.getName(), this.players);
+			this.players[i] = p;
+			return true;
 		}
-		console.log(`This collection already has player with name "${p.getName()}"`);
-		return false;
 	}
 	
 	hasPlayer(s: string): boolean {
@@ -143,6 +169,14 @@ export class PlayerList {
 			names.push(p.getName());
 		});
 		return names;
+	}
+	
+	getPlayerDescriptions(): string[] {
+		let des: string[] = [];
+		this.players.forEach((p) => {
+			des.push(p.getDescription());
+		});
+		return des;
 	}
 	
 	removePlayer(s: string): void {

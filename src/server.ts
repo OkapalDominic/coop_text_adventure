@@ -34,6 +34,12 @@ export class AdventureServer {
 		this.dungeons.addDungeon(DungeonFactory.testDungeon());
 		this.dungeons.addDungeon(DungeonFactory.testDungeon('Derpgeon'));
 		this.dungeons.addDungeon(DungeonFactory.testDungeon('AnotherDungeon'));
+		this.dungeons.addDungeon(DungeonFactory.testDungeon('Dungeon1'));
+		this.dungeons.addDungeon(DungeonFactory.testDungeon('Dungeon2'));
+		this.dungeons.addDungeon(DungeonFactory.testDungeon('Dungeon3'));
+		this.dungeons.addDungeon(DungeonFactory.testDungeon('Dungeon4'));
+		this.dungeons.addDungeon(DungeonFactory.testDungeon('Dungeon5'));
+		this.dungeons.addDungeon(DungeonFactory.testDungeon('Dungeon6'));
 		this.players = new PlayerList();
 		
 		// listen for messages
@@ -80,11 +86,11 @@ export class AdventureServer {
 				if (this.players.addPlayer(p) === true) {
 					this.emit(p, 'login', {
 						s: 'success',
-						d: 'Thou Hast Chosen Goodly!',
+						d: p.getDescription(),
 					});
 					this.emit(p, 'infoDungeon', {
 						s: 'dungeons',
-						d: this.dungeons.getDungeonNames().join(' '),
+						d: this.dungeons.getDungeonNames().join('\n'),
 					});
 				} else {
 					this.emit(p, 'login', {
@@ -163,9 +169,14 @@ export class AdventureServer {
 			// -------------------------------------------
 			socket.on('disconnect', () => {
 				console.log('server socket disconnect');
-				/*if (player) {
-					console.log('player disconnected');
-				}*/
+				if (this.players.hasPlayer(socket.id)) {
+					let p = this.players.getPlayer(socket.id);
+					if (p.currentDungeon() !== undefined) {
+						p.exitDungeon();
+					}
+					this.players.removePlayer(socket.id);
+					console.log('player removed');
+				}
 			});
 		});
 	}
