@@ -181,6 +181,14 @@ export class Dungeon extends Entity {
 			case 'chat':
 				this.commandChat(command, p);
 				break;
+			case 'leave':
+				p.exitDungeon();
+				this.sendPlayers();
+				this.sendMessage(p, 'left', {
+					s: p.getDescription(),
+					d: `they left "${this.name}"`,
+				});
+				break;
 			default:
 				console.log(`error unknown command "${cmd[0]}"`);
 				this.sendMessage(p, 'sendCommand', {
@@ -373,8 +381,11 @@ export class DungeonFactory {
 		let a0 = new Area('StartRoom', 'A very good place to start.', d);
 		let a1 = new Area('EmptyRoom', 'Nothing in this room.', d);
 		let a2 = new Area('ItemRoom', 'Contains an item.', d);
-		
-		let i = new Item('Apple', 'It may be able to heal you! Probably not though.', a2);
+		a2.setOnEnter(function() {
+			console.log(`You have entered "${this.name}".`);
+			console.log('Poof an Apple appeared');
+			let i = new Item('Apple', 'It may be able to heal you! Probably not though.', a2);
+		});
 		
 		DungeonFactory.symmetricConnection(a0,a1);
 		DungeonFactory.symmetricConnection(a1,a2);
