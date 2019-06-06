@@ -249,6 +249,7 @@ export class Dungeon extends Entity {
 					s: p.getDescription(),
 					d: 'Is a true winner! What is taking you so long?'
 				});
+				this.sendPlayers();
 			} else {
 				this.sendMessageRoom(p, 'sendCommand', {
 					s: p.getDescription(),
