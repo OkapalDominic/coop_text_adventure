@@ -34,6 +34,12 @@ export class AdventureServer {
 		this.dungeons.addDungeon(DungeonFactory.testDungeon());
 		this.dungeons.addDungeon(DungeonFactory.testDungeon('Derpgeon'));
 		this.dungeons.addDungeon(DungeonFactory.testDungeon('AnotherDungeon'));
+		this.dungeons.addDungeon(DungeonFactory.testDungeon('Dungeon1'));
+		this.dungeons.addDungeon(DungeonFactory.testDungeon('Dungeon2'));
+		this.dungeons.addDungeon(DungeonFactory.testDungeon('Dungeon3'));
+		this.dungeons.addDungeon(DungeonFactory.testDungeon('Dungeon4'));
+		this.dungeons.addDungeon(DungeonFactory.testDungeon('Dungeon5'));
+		this.dungeons.addDungeon(DungeonFactory.testDungeon('Dungeon6'));
 		this.players = new PlayerList();
 		
 		// listen for messages
